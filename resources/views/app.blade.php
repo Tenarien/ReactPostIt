@@ -6,7 +6,6 @@
         @vitereactrefresh
         @vite('resources/js/app.jsx')
         @inertiaHead
-        <title>PostIt</title>
     </head>
     <body>
         @inertia
