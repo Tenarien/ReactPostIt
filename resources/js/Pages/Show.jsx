@@ -1,12 +1,26 @@
 import {Head, Link, useForm, usePage} from "@inertiajs/react";
+import CommentsSection from "@/Components/CommentsSection.jsx";
 
 export default function Show({ post }) {
     const {delete: destroy, processing} = useForm();
     const { component } = usePage();
 
-    function submit(e) {
+    const { data, setData, post: submitComment, processing: commentProcessing } = useForm({
+        body: '',
+        post_id: `${post.id}`,
+    });
+
+
+    function handlePostDeletion(e) {
         e.preventDefault();
         destroy(`/posts/${post.id}`);
+    }
+
+    function handleCommentSubmit(e) {
+        e.preventDefault();
+        submitComment(`/posts/${post.id}/comments`, {
+            onError: () => console.error('Comment submission failed'),
+        });
     }
     return (
         <>
@@ -19,7 +33,7 @@ export default function Show({ post }) {
                         <span className="text-sm font-thin">{new Date(post.created_at).toLocaleTimeString()}</span>
                     </div>
                     <div className="flex gap-2">
-                        <form onSubmit={submit}>
+                        <form onSubmit={handlePostDeletion}>
                             <button disabled={processing}
                                     className="text-sm text-white rounded-full p-1 bg-red-500 hover:bg-opacity-70 hover:shadow-md transition duration-300">Delete
                             </button>
@@ -33,6 +47,15 @@ export default function Show({ post }) {
 
                 <p>{post.body}</p>
             </div>
+
+            {/* Comment Section */}
+            <CommentsSection
+                post={post}
+                onCommentSubmit={handleCommentSubmit}
+                commentData={data}
+                setCommentData={setData}
+                processing={commentProcessing}
+            />
         </>
     );
 }
