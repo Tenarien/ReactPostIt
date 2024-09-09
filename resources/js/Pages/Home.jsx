@@ -7,12 +7,17 @@ export default function Home({ posts }) {
     return (
         <>
             <Head title={component} />
-            <h1 className="text-3xl">Hello</h1>
             <div>
                 {posts.data.map(post => (
                     <div key={post.id} className="p-4 border-b border-gray-200">
                         <span className="font-bold">Posted: </span>
-                        <span className="text-sm">{new Date(post.created_at).toLocaleTimeString()}</span>
+                        <span className="text-sm">{new Date(post.created_at).toLocaleTimeString([], {
+                            year: 'numeric',
+                            month: 'numeric',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })}</span>
                         <p className="font-medium">{post.body}</p>
                         <Link href={`/posts/${post.id}`} className="text-blue-500">Read more...</Link>
                     </div>
