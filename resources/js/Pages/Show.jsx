@@ -1,11 +1,11 @@
 import {Head, Link, useForm, usePage} from "@inertiajs/react";
-import CommentsSection from "@/Components/CommentsSection.jsx";
+import CommentsSection from "@/Components/Comments/CommentsSection.jsx";
 
-export default function Show({ post }) {
+export default function Show({ post, comments, replies }) {
     const {delete: destroy, processing} = useForm();
     const { component } = usePage();
 
-    const { data, setData, post: submitComment, processing: commentProcessing } = useForm({
+    const { data, setData, post: submitComment, processing: commentProcessing, errors } = useForm({
         body: '',
         post_id: `${post.id}`,
     });
@@ -51,10 +51,13 @@ export default function Show({ post }) {
             {/* Comment Section */}
             <CommentsSection
                 post={post}
+                parentComments={comments}
+                replies={replies}
                 onCommentSubmit={handleCommentSubmit}
                 commentData={data}
                 setCommentData={setData}
                 processing={commentProcessing}
+                errors={errors}
             />
         </>
     );
