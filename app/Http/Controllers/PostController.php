@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
@@ -51,8 +52,10 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $post->load('comments');
-        return inertia('Show', ['post' => $post]);
+        $replies = Comment::getReplies($post->id);
+        $comments = Comment::getParentComments($post->id);
+
+        return inertia('Show', ['post' => $post, 'comments' => $comments, 'replies' => $replies]);
     }
 
     /**
@@ -74,7 +77,7 @@ class PostController extends Controller
                 'body' => ['required', 'max:255', 'min:10']
             ]);
 
-            Post::updateOrCreate($validatedData);
+            $post->update($validatedData);
 
             return to_route('post.index')->with('success', 'Post updated successfully.');
         } catch (\Illuminate\Validation\ValidationException $e) {
