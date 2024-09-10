@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
 
-function CommentForm({ onSubmit, value, onChange, processing, onCommentSuccess }) {
+function CommentForm({ onSubmit, value, onChange, processing, errors }) {
     const textareaRef = useRef();
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -18,9 +18,10 @@ function CommentForm({ onSubmit, value, onChange, processing, onCommentSuccess }
                         value={value}
                         onChange={onChange}>
                     </textarea>
+            {errors.body && <p className="text-sm text-opacity-70 text-red-600 font-semibold">{ errors.body }</p>}
             <button type="submit" disabled={processing}
                     className="mt-2 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition"
-            >Submit Comment
+            >{processing ? 'Commenting...' : 'Comment'}
             </button>
         </form>
     );
