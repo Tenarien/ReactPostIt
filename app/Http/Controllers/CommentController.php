@@ -12,13 +12,11 @@ class CommentController extends Controller
         try {
             $validatedData = $request->validate([
                 'post_id' => ['required', 'exists:posts,id'],
+                'parent_id' => ['nullable', 'exists:comments,id'],
                 'body' => ['required', 'max:255', 'string']
             ]);
 
-            Comment::create([
-                'post_id' => $validatedData['post_id'],
-                'body' => $validatedData['body']
-            ]);
+            Comment::create($validatedData);
             return back()->with('success', 'Comment created successfully!');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->with('error', 'Comment creation failed!');
