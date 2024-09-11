@@ -1,5 +1,6 @@
 import {Link, usePage} from '@inertiajs/react'
 import Flash from "@/Layouts/Flash.jsx";
+import LoginForm from "@/Components/Auth/LoginForm.jsx";
 
 export default function Layout({ children }) {
     const { props } = usePage();
@@ -11,6 +12,7 @@ export default function Layout({ children }) {
                 <nav className="flex items-center justify-between font-bold text-lg">
                     <Link className="p-2 hover:bg-zinc-400 hover:bg-opacity-50 rounded-lg" href="/">Home</Link>
                     <Link className="p-2 hover:bg-zinc-400 hover:bg-opacity-50 rounded-lg" href="/posts/create">Create</Link>
+                    <LoginForm/>
                 </nav>
             </header>
 
