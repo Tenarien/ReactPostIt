@@ -8,6 +8,14 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+
+    public function loginForm()
+    {
+        return inertia('Register', [
+            'showLoginForm' => true,
+        ]);
+    }
+
     public function login(Request $request)
     {
         $validatedData = $request->validate([
@@ -17,7 +25,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($validatedData)) {
             $request->session()->regenerate();
-            return redirect()->intended('/');
+            return redirect()->intended('/')->with('success', 'You are now logged in!');
         } else {
             return back()->withErrors([
                 'error' => 'These credentials do not match our records.',
@@ -29,11 +37,10 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/posts/4');
+        return redirect('/')->with('success', 'You have been logged out.');
     }
 
     public function registerForm()
