@@ -31,10 +31,10 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        sleep(2);
         try {
             $validatedData = $request->validate([
-                'body' => ['required', 'max:255', 'min:10']
+                'body' => ['required', 'string', 'max:255', 'min:10'],
+                'user_id' => ['required', 'integer', 'exists:users,id'],
             ]);
 
             Post::create($validatedData);
