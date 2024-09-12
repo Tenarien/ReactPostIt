@@ -1,12 +1,13 @@
 import React from 'react';
-import {useForm} from "@inertiajs/react";
+import {useForm, usePage} from "@inertiajs/react";
 
 export default function ReplyForm({ comment, postId, toggleReplies }) {
     const [showReplyForm, setShowReplyForm] = React.useState(false);
     const { data, setData, post, processing, errors } = useForm({
-       body: '',
-       post_id: postId,
-       parent_id: comment.id,
+        body: '',
+        post_id: postId,
+        user_id: usePage().props.auth.user.id,
+        parent_id: comment.id,
     });
 
     const handleReplySubmit = (e) => {

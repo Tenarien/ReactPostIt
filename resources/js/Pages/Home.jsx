@@ -1,5 +1,6 @@
 import Layout from "@/Layouts/Layout.jsx";
 import {Head, Link, usePage} from "@inertiajs/react";
+import {formatDistanceToNow} from "date-fns";
 
 export default function Home({ posts }) {
     const { component } = usePage();
@@ -11,13 +12,7 @@ export default function Home({ posts }) {
                 {posts.data.map(post => (
                     <div key={post.id} className="p-4 border-b border-gray-200">
                         <span className="font-bold">Posted: </span>
-                        <span className="text-sm">{new Date(post.created_at).toLocaleTimeString([], {
-                            year: 'numeric',
-                            month: 'numeric',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        })}</span>
+                        <span className="text-sm">{formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}</span>
                         <p className="font-medium">{post.body}</p>
                         <Link href={`/posts/${post.id}`} className="text-blue-500">Read more...</Link>
                     </div>

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useForm } from "@inertiajs/react";
+import React, {useEffect, useState} from 'react';
+import {Link, useForm, usePage} from "@inertiajs/react";
 
 function LoginForm() {
     const { data, setData, post, processing, errors } = useForm({
@@ -7,21 +7,21 @@ function LoginForm() {
         password: '',
     });
 
+    const { props } = usePage();
     const [showLoginForm, setShowLoginForm] = useState(false);
+
+    useEffect(() => {
+        setShowLoginForm(props.showLoginForm || false);
+    }, [props.showLoginForm]);
 
     const handleLoginSubmit = (e) => {
         e.preventDefault();
         post('/login');
     }
 
-    const handleLogoutSubmit = (e) => {
-        e.preventDefault();
-        post('/logout');
-    }
 
     return (
         <div>
-            <button onClick={handleLogoutSubmit}>Logout</button>
             <button
                 onClick={() => setShowLoginForm(!showLoginForm)}
                 className={`bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded ${showLoginForm ? 'hidden' : 'block'}`}

@@ -1,4 +1,5 @@
 import {Head, Link, useForm, usePage} from "@inertiajs/react";
+import { formatDistanceToNow } from 'date-fns'
 import CommentsSection from "@/Components/Comments/CommentsSection.jsx";
 
 export default function Show({ post, comments, replies }) {
@@ -8,6 +9,7 @@ export default function Show({ post, comments, replies }) {
     const { data, setData, post: submitComment, processing: commentProcessing, errors } = useForm({
         body: '',
         post_id: `${post.id}`,
+        user_id: usePage().props.auth.user.id,
     });
 
 
@@ -29,8 +31,9 @@ export default function Show({ post, comments, replies }) {
             <div className="font-medium border p-4 mt-4 rounded-lg bg-gray-50 shadow-lg">
                 <div className="flex justify-between">
                     <div>
-                        <span className="font-bold">Posted: </span>
-                        <span className="text-sm font-thin">{new Date(post.created_at).toLocaleTimeString()}</span>
+                        <span className="text-black font-bold text-xl mr-4">{ usePage().props.auth.user.name}</span>
+                        <span className="font-semibold">Posted: </span>
+                        <span className="text-sm font-thin">{formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}</span>
                     </div>
                     <div className="flex gap-2">
                         <form onSubmit={handlePostDeletion}>

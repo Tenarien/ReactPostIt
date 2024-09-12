@@ -2,7 +2,8 @@ import {Head, useForm, usePage} from "@inertiajs/react";
 
 export default function Create() {
     const { data, setData, post, errors, processing } = useForm({
-       body: "",
+        body: "",
+        user_id: usePage().props.auth.user.id,
     });
     const { component } = usePage();
 
@@ -10,7 +11,6 @@ export default function Create() {
         e.preventDefault();
         post("/posts");
     }
-
     return (
         <>
             <Head title={component} />

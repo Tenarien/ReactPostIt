@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import ReplyForm from "@/Components/Comments/ReplyForm.jsx";
+import {usePage} from "@inertiajs/react";
+import {formatDistanceToNow} from "date-fns";
 
 function CommentItem({ comment, replies, postId, onReply }) {
     const [showReplies, setShowReplies] = useState(false);
@@ -11,10 +13,13 @@ function CommentItem({ comment, replies, postId, onReply }) {
 
     return (
         <div key={comment.id} className="p-2 rounded-lg">
-            <p className="text-sm">{comment.body}</p>
             <div className="text-xs text-gray-500">
-                Posted at {new Date(comment.created_at).toLocaleString()}
+                <span className="text-black font-bold text-sm text-center mr-4">
+                    {usePage().props.auth.user.name}
+                </span>
+                <span> {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}</span>
             </div>
+            <p className="text-sm">{comment.body}</p>
             <div className="flex space-x-2">
                 {/* ReplyForm form */}
                 <ReplyForm
@@ -22,7 +27,6 @@ function CommentItem({ comment, replies, postId, onReply }) {
                     postId={postId}
                     onReply={onReply}
                     toggleReplies={toggleReplies}
-
                 />
                 {/* Button to toggle replies */}
                 {filteredReplies.length > 0 && (
