@@ -11,8 +11,9 @@ class CommentController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'post_id' => ['required', 'exists:posts,id'],
-                'parent_id' => ['nullable', 'exists:comments,id'],
+                'post_id' => ['required', 'integer', 'exists:posts,id'],
+                'user_id' => ['required', 'integer', 'exists:users,id'],
+                'parent_id' => ['nullable', 'integer', 'exists:comments,id'],
                 'body' => ['required', 'max:255', 'string']
             ]);
 
