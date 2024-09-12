@@ -1,11 +1,21 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 
 function CommentForm({ onSubmit, value, onChange, processing, errors }) {
     const textareaRef = useRef();
+    const [showSubmit, setShowSubmit] = useState(false);
+
     const handleSubmit = (e) => {
         e.preventDefault();
         onSubmit(e);
         textareaRef.current.value = '';
+    };
+
+    const handleFocus = () => {
+        setShowSubmit(true);
+    };
+
+    const handleBlur = () => {
+        setTimeout(() => setShowSubmit(false), 200);
     };
 
     return (
@@ -16,13 +26,16 @@ function CommentForm({ onSubmit, value, onChange, processing, errors }) {
                         placeholder="Add a comment..."
                         rows="1"
                         value={value}
-                        onChange={onChange}>
+                        onChange={onChange}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
+                    >
                     </textarea>
             {errors.body && <p className="text-sm text-opacity-70 text-red-600 font-semibold">{ errors.body }</p>}
-            <button type="submit" disabled={processing}
-                    className="mt-2 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition"
+            {showSubmit && (<button type="submit" disabled={processing}
+                                    className="mt-2 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition"
             >{processing ? 'Commenting...' : 'Comment'}
-            </button>
+            </button>)}
         </form>
     );
 }
