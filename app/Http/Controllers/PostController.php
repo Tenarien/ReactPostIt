@@ -13,7 +13,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::latest()->paginate(5);
+        $posts = Post::latest()->with('user')->paginate(5);
 
         return inertia('Home', ['posts' => $posts]);
     }
@@ -52,10 +52,14 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $replies = Comment::getReplies($post->id);
-        $comments = Comment::getParentComments($post->id);
+        $post->load('user');
 
-        return inertia('Show', ['post' => $post, 'comments' => $comments, 'replies' => $replies]);
+        $comments = Comment::getCommentsForPost($post);
+
+        return inertia('Show', [
+            'post' => $post,
+            'comments' => $comments,
+        ]);
     }
 
     /**
