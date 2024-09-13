@@ -37,22 +37,14 @@ class Comment extends Model
 
     public function replies(): HasMany
     {
-        return $this->hasMany(Comment::class, 'parent_id')->with('replies');
+        return $this->hasMany(Comment::class, 'parent_id')->with('user');
     }
 
-    public static function getReplies($postId)
+    public static function getCommentsForPost($post)
     {
-        return self::where('post_id', $postId)
-            ->whereNotNull('parent_id')
-            ->with('replies')
-            ->get();
-    }
-
-    public static function getParentComments($postId)
-    {
-        return self::where('post_id', $postId)
+        return self::where('post_id', $post->id)
             ->whereNull('parent_id')
-            ->with('replies')
+            ->with('user', 'replies')
             ->get();
     }
 }
