@@ -23,4 +23,13 @@ class CommentController extends Controller
             return redirect()->back()->withErrors($e->errors())->with('error', 'Comment creation failed!');
         }
     }
+
+    public function fetchReplies($commentId)
+    {
+        $replies = Comment::where('parent_id', $commentId)
+            ->with('user', 'replies')
+            ->get();
+
+        return response()->json($replies);
+    }
 }
