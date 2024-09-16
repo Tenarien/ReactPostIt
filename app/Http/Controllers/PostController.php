@@ -53,12 +53,18 @@ class PostController extends Controller
     public function show(Post $post)
     {
         $post->load('user');
+        $postLikes = $post->likers;
 
         $comments = Comment::getCommentsForPost($post);
+
+        $hasLikedPost = $post->likers()->where('user_id', auth()->id())->exists();
+
 
         return inertia('Show', [
             'post' => $post,
             'comments' => $comments,
+            'postLikes' => $postLikes,
+            'hasLikedPost' => $hasLikedPost,
         ]);
     }
 
