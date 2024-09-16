@@ -82,14 +82,18 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
+        $userId = $request->input('user_id');
         try {
             $validatedData = $request->validate([
                 'body' => ['required', 'max:255', 'min:10']
             ]);
 
-            $post->update($validatedData);
+            if(auth()->id() && $post->user->id == $userId){
+                $post->update($validatedData);
+                return back()->with('success', 'Post updated successfully.');
+            }
 
-            return to_route('post.index')->with('success', 'Post updated successfully.');
+            return back()->with('error', 'Post update failed!');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return back()->withErrors($e->errors())->with('error', 'Post update failed!');
         }
@@ -103,6 +107,27 @@ class PostController extends Controller
     {
         $post->delete();
 
-        return redirect('/')->with('success', 'Post deleted!');
+            return redirect('/')->with('success', 'Post deleted!');
+        }
+
+        return redirect('/')->with('error', 'There was an error deleting the post!');
+    }
+
+    public function like(Post $post)
+    {
+        try {
+            $userId = auth()->id();
+
+            if ($post->likers()->where('user_id', $userId)->exists()) {
+                $post->likers()->detach($userId);
+                return back()->with('message', 'You disliked this post!');
+            }
+
+            $post->likers()->attach($userId);
+
+            return back()->with('success', 'Liked successfully!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors())->with('error', 'Liking failed!');
+        }
     }
 }
