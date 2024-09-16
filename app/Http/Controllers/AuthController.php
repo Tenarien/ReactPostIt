@@ -27,9 +27,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
             return redirect()->intended('/')->with('success', 'You are now logged in!');
         } else {
-            return back()->withErrors([
-                'error' => 'These credentials do not match our records.',
-            ]);
+            return back()->with('error', 'These credentials do not match our records.',);
         }
 
     }
@@ -52,7 +50,7 @@ class AuthController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'name' => ['required', 'string', 'max:255', 'unique:users'],
+                'name' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
                 'password' => ['required', 'string', 'min:8', 'confirmed'],
             ]);
