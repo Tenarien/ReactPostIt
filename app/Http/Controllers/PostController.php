@@ -103,9 +103,11 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Post $post)
+    public function destroy(Post $post, Request $request)
     {
-        $post->delete();
+        $userId = $request->get('user_id');
+        if ($post->user->id == $userId) {
+            $post->delete();
 
             return redirect('/')->with('success', 'Post deleted!');
         }
