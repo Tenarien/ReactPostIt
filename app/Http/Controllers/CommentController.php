@@ -32,4 +32,35 @@ class CommentController extends Controller
 
         return response()->json($replies);
     }
+
+    public function fetchCommentLikes(Comment $comment)
+    {
+        $comment = Comment::getComment($comment);
+
+        $hasLikedComment = $comment->likers()->where('user_id', auth()->id())->exists();
+        $likesCount = $comment->likers()->count();
+
+        return response()->json([
+            'comment_likes_count' => $likesCount,
+            'has_liked_comment' => $hasLikedComment,
+        ]);
+    }
+
+    public function like(Comment $comment)
+    {
+        try {
+            $userId = auth()->id();
+
+            if ($comment->likers()->where('user_id', $userId)->exists()) {
+                $comment->likers()->detach($userId);
+                return back()->with('message', 'You disliked this comment!');
+            }
+
+            $comment->likers()->attach($userId);
+
+            return back()->with('success', 'Liked successfully!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors())->with('error', 'Liking failed!');
+        }
+    }
 }
