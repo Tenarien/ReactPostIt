@@ -48,7 +48,7 @@ class Comment extends Model
 
     public static function getCommentsForPost($post)
     {
-        return self::where('post_id', $post->id || $post)
+        return self::where('post_id', $post->id)
             ->whereNull('parent_id')
             ->with('user', 'replies')
             ->get();

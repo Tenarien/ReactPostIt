@@ -6,7 +6,7 @@ function CommentForm({ post }) {
 
     const { data, setData, post: submitComment, processing: processing, errors, reset } = useForm({
         body: '',
-        post_id: `${post.id}`,
+        post_id: post.id,
         user_id: usePage().props.auth.user ? usePage().props.auth.user.id : undefined,
     });
 
