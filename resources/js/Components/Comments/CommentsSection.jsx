@@ -3,7 +3,7 @@ import CommentItem from './CommentItem.jsx';
 import CommentForm from './CommentForm.jsx';
 
 
-function CommentsSection({ post, parentComments, replies, onCommentSubmit, commentData, setCommentData, processing, onCommentSuccess, errors }) {
+function CommentsSection({ post, comments }) {
 
     return (
         <div className="mt-6">
@@ -11,20 +11,14 @@ function CommentsSection({ post, parentComments, replies, onCommentSubmit, comme
 
             {/* Comment Form */}
             <CommentForm
-                onSubmit={onCommentSubmit}
-                commentData={commentData.body}
-                onChange={e => setCommentData('body', e.target.value)}
-                processing={processing}
-                onCommentSucces={onCommentSuccess}
-                errors={errors}
+                post={post}
             />
 
             <div className="mt-4 space-y-2">
-                {parentComments.map(comment => (
+                {comments.map(comment => (
                     <CommentItem
                         key={comment.id}
                         comment={comment}
-                        replies={replies}
                         postId={post.id}
                     />
                 ))}
