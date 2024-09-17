@@ -9,10 +9,9 @@ export default function Layout({ children }) {
 
     return (
         <>
-            <header className="py-2 px-10 bg-zinc-600 text-white shadow-lg">
+            <header className="sticky w-full top-0 z-50 py-2 px-10 bg-zinc-600 text-white shadow-lg">
                 <nav className="flex items-center justify-between font-bold text-lg">
                     <Link className="p-2 hover:bg-zinc-400 hover:bg-opacity-50 rounded-lg" href="/">Home</Link>
-                    <Link className="p-2 hover:bg-zinc-400 hover:bg-opacity-50 rounded-lg" href="/posts/create">Create</Link>
                     {!auth.user ? (
                         <LoginForm />
                     ) : (<Link
@@ -25,7 +24,7 @@ export default function Layout({ children }) {
                 </nav>
             </header>
 
-            <main className="mt-10 mx-20">
+            <main className="mt-10 mx-4 sm:mx-10 md:mx-20">
                 {children}
                 <Flash message={message} />
             </main>

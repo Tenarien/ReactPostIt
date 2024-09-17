@@ -33,10 +33,11 @@ export default function Create() {
                     <div className="flex justify-end">
                         <button
                             type="submit"
-                            className={`py-2 px-6 text-white bg-orange-500 rounded-lg font-semibold shadow-md hover:bg-orange-600 transition duration-300 ease-in-out ${
-                                processing ? 'opacity-50 cursor-not-allowed' : ''
-                            }`}
-                            disabled={processing}
+                            className={`py-2 px-6 text-white rounded font-semibold
+                             shadow-md transition duration-300 ease-in-out
+                             ${processing ? 'opacity-50 cursor-not-allowed' : ''}
+                             ${data.body.length >= 10 ? 'bg-orange-500 hover:bg-orange-700' : 'bg-gray-500'}`}
+                            disabled={processing || data.body.length < 10}
                         >
                             {processing ? 'Posting...' : 'Create Post'}
                         </button>
