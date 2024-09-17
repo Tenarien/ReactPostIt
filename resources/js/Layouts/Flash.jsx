@@ -55,7 +55,7 @@ export default function Flash() {
 
     return (
         <div
-            className={`fixed w-fit bottom-4 right-4 px-4 py-2 m-4 rounded-lg text-white transform duration-1000
+            className={`fixed z-50 w-fit bottom-4 right-4 px-4 py-2 m-4 rounded-lg text-white transform duration-1000 transition-all ease-in-out
             ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-full'} ${getBackgroundColor()}`}
         >
             <p className="font-bold">{currentMessage}</p>

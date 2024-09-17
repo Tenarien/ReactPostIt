@@ -7,7 +7,7 @@ export default function ReplyForm({ comment, postId, toggleReplies }) {
     const { data, setData, post, processing, errors } = useForm({
         body: '',
         post_id: postId,
-        user_id: usePage().props.auth.user ? usePage().props.auth.user.id : undefined,
+        user_id: props.auth.user ? props.auth.user.id : undefined,
         parent_id: comment.id,
     });
 
@@ -27,7 +27,7 @@ export default function ReplyForm({ comment, postId, toggleReplies }) {
 
     return (
         <>
-            <div className="space-y-2">
+            <div className="space-y-2 w-full">
                 {/* Toggle Reply Form Visibility */}
                 {props.auth.user ? (
                     <button
@@ -47,13 +47,13 @@ export default function ReplyForm({ comment, postId, toggleReplies }) {
                 {/* Reply Form */}
                 {showReplyForm && (
                     <form onSubmit={handleReplySubmit}
-                          className="mt-2 bg-gray-50 p-4 border border-gray-200 rounded-lg shadow-sm">
+                          className="mt-2 w-full bg-gray-50 p-4 border border-gray-200 rounded-lg shadow-sm">
                         <textarea
                             value={data.body}
                             onChange={(e) => setData('body', e.target.value)}
                             placeholder="Write a reply..."
                             className="w-full p-3 border border-gray-300 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
-                            rows="3"
+                            rows="2"
                             required
                         />
                         {errors.body && (
