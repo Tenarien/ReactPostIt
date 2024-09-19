@@ -25,7 +25,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/posts/{post}', [PostController::class, 'update']);
     Route::post('/posts/{post}', [PostController::class, 'destroy']);
     Route::post('/posts/{post}', [PostController::class, 'store']);
+
     Route::post('/posts/{post}/comments', [CommentController::class, 'store']);
+    Route::put('/comments/{comment}', [CommentController::class, 'update']);
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
 
     Route::post('/posts/{post}/like', [PostController::class, 'like']);
     Route::post('/comments/{comment}/like', [CommentController::class, 'like']);
