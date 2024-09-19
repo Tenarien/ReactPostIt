@@ -4,6 +4,7 @@ import {useEffect, useRef, useState} from "react";
 import CommentsSection from "@/Components/Comments/CommentsSection.jsx";
 import EditPostForm from "@/Components/Posts/EditPostForm.jsx";
 import PostReactions from "@/Components/Posts/PostReactions.jsx";
+import DeleteConfirmationModal from "@/Components/Modals/DeleteConfirmationModal.jsx";
 
 export default function Show({ post, comments, hasLikedPost, postLikes, }) {
     const { props, component } = usePage();
@@ -15,6 +16,8 @@ export default function Show({ post, comments, hasLikedPost, postLikes, }) {
 
     const [showPostOptions, setShowPostOptions] = useState(false);
     const [editMode, setEditMode] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
 
     const optionsRef = useRef(null);
     const buttonRef = useRef(null);
@@ -35,9 +38,20 @@ export default function Show({ post, comments, hasLikedPost, postLikes, }) {
 
     }, [setShowPostOptions]);
 
-    function handlePostDeletion(e) {
+    const handleOpenDeleteModal = (e) => {
+        e.preventDefault();
+        setModalMessage("Are you sure you want to delete this post?");
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
+
+    const handlePostDeletion = (e) => {
         e.preventDefault();
         destroy(`/posts/${post.id}`);
+        setShowModal(false);
     }
 
     function handleEditComplete() {
@@ -69,13 +83,15 @@ export default function Show({ post, comments, hasLikedPost, postLikes, }) {
                     {/* Options */}
                     <div
                         ref={optionsRef}
-                        className={`relative z-40 transition-all duration-500 ease-in-out ${showPostOptions ? `opacity-100` : `opacity-0`}`}>
+                        className={`relative z-10 transition-all duration-500 ease-in-out ${showPostOptions ? `opacity-100` : `opacity-0`}`}>
                         {showPostOptions && post.user.id === auth.user.id && (<div
                             className={`absolute text-center bg-gray-100 w-20 py-4 shadow-lg rounded border border-orange-500 flex right-5 flex-col gap-2
                             ${showPostOptions ? `block` : `hidden`}`}>
                             <form onSubmit={handlePostDeletion}>
-                                <button disabled={processing}
-                                        className="text-sm text-orange-500 w-full p-1  border-orange-500 hover:bg-red-500 hover:text-white hover:shadow-md transition duration-300">
+                                <button
+                                    onClick={handleOpenDeleteModal}
+                                    disabled={processing}
+                                    className="text-sm text-orange-500 w-full p-1  border-orange-500 hover:bg-red-500 hover:text-white hover:shadow-md transition duration-300">
                                     {processing ? 'Deleting...' : 'Delete'}
                                 </button>
                             </form>
@@ -89,6 +105,13 @@ export default function Show({ post, comments, hasLikedPost, postLikes, }) {
                             </button>
                         </div>)}
                     </div>
+                    {/* Delete Modal */}
+                    <DeleteConfirmationModal
+                        show={showModal}
+                        onClose={handleCloseModal}
+                        onConfirm={handlePostDeletion}
+                        message={modalMessage}
+                    />
                 </div>
 
                 {editMode
