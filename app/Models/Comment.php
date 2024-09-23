@@ -38,10 +38,10 @@ class Comment extends Model
 
     public function replies(): HasMany
     {
-        return $this->hasMany(Comment::class, 'parent_id')->with('user');
+        return $this->hasMany(Comment::class, 'parent_id')->with(['user', 'replies', 'likes']);
     }
 
-    public function likers(): BelongsToMany
+    public function likes(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'likes', 'comment_id', 'user_id');
     }
