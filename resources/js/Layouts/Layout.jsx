@@ -26,7 +26,7 @@ export default function Layout({ children }) {
 
             <main className="mt-10 mx-4 sm:mx-10 md:mx-20">
                 {children}
-                <Flash message={message} />
+                <Flash/>
             </main>
         </>
     );
