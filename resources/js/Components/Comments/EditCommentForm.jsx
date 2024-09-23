@@ -1,6 +1,6 @@
 import {Head, useForm, usePage} from "@inertiajs/react";
 
-export default function EditCommentForm({ comment, onEditComplete }) {
+export default function EditCommentForm({ comment, onEditComplete, onEditCancel }) {
     const { props } = usePage();
     const { component } = usePage();
     const { data, setData, put, errors, processing } = useForm({
@@ -12,7 +12,7 @@ export default function EditCommentForm({ comment, onEditComplete }) {
     function submit(e) {
         e.preventDefault();
         put(`/comments/${comment.id}`, {
-            onSuccess: () => onEditComplete(),
+            onSuccess: () => onEditComplete(data.body),
         });
 
     }
@@ -22,7 +22,7 @@ export default function EditCommentForm({ comment, onEditComplete }) {
             <Head title={ component } />
             <div className="relative pb-12 w-full">
                 <button
-                    onClick={onEditComplete}
+                    onClick={onEditCancel}
                     className="absolute text-sm top-0 right-0 px-2 text-orange-500 border border-orange-500 rounded-full hover:bg-orange-500 hover:text-white transform duration-300"
                 >Cancel
                 </button>
