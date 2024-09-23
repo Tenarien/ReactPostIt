@@ -1,17 +1,17 @@
 import {Head, useForm, usePage} from "@inertiajs/react";
 
-export default function EditPostForm({ post, onEditComplete }) {
+export default function EditCommentForm({ comment, onEditComplete }) {
     const { props } = usePage();
     const { component } = usePage();
     const { data, setData, put, errors, processing } = useForm({
-        body: post.body,
+        body: comment.body,
         user_id: props.auth.user ? props.auth.user.id : undefined,
     });
 
 
     function submit(e) {
         e.preventDefault();
-        put(`/posts/${post.id}`, {
+        put(`/comments/${comment.id}`, {
             onSuccess: () => onEditComplete(),
         });
 
@@ -35,8 +35,8 @@ export default function EditPostForm({ post, onEditComplete }) {
                     </textarea>
                     {errors.body && <p className="text-opacity-70 text-red-600 font-semibold">{ errors.body }</p>}
                     <button
-                        className={`absolute bottom-0 right-0 p-2 text-white rounded text-lg ${data.body.length >= 10 ? 'bg-orange-500 hover:bg-orange-700' : 'bg-gray-500'}`}
-                        disabled={processing || data.body.length < 10}
+                        className={`absolute bottom-0 right-0 p-2 text-white rounded text-lg ${data.body.length >= 1 ? 'bg-orange-500 hover:bg-orange-700' : 'bg-gray-500'}`}
+                        disabled={processing || data.body.length < 1}
                     >Confirm
                     </button>
                 </form>
