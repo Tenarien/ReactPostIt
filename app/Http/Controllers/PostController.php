@@ -13,7 +13,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::latest()->with('user')->paginate(5);
+        $posts = Post::latest()->with(['user', 'likes'])->paginate(5);
 
         return inertia('Home', ['posts' => $posts]);
     }
@@ -39,7 +39,7 @@ class PostController extends Controller
 
             Post::create($validatedData);
 
-            return redirect('/')->with('message', 'Post created!');
+            return redirect('/')->with('success', 'Post created!');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->with('error', 'Post creation failed!');
         }
@@ -52,13 +52,17 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $post->load('user');
-        $postLikes = $post->likers;
+        $post->load([
+            'user',
+            'likes',
+            'comments.user',
+            'comments.replies',
+            'comments.likes',
+        ]);
 
-        $comments = Comment::getCommentsForPost($post);
-
-        $hasLikedPost = $post->likers()->where('user_id', auth()->id())->exists();
-
+        $postLikes = $post->likes;
+        $comments = $post->comments;
+        $hasLikedPost = $post->likes()->where('user_id', auth()->id())->exists();
 
         return inertia('Show', [
             'post' => $post,
@@ -120,12 +124,12 @@ class PostController extends Controller
         try {
             $userId = auth()->id();
 
-            if ($post->likers()->where('user_id', $userId)->exists()) {
-                $post->likers()->detach($userId);
-                return back()->with('message', 'You disliked this post!');
+            if ($post->likes()->where('user_id', $userId)->exists()) {
+                $post->likes()->detach($userId);
+                return back()->with('success', 'You disliked this post!');
             }
 
-            $post->likers()->attach($userId);
+            $post->likes()->attach($userId);
 
             return back()->with('success', 'Liked successfully!');
         } catch (\Illuminate\Validation\ValidationException $e) {
