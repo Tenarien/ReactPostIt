@@ -1,7 +1,7 @@
 import {Head, useForm, usePage} from "@inertiajs/react";
 
 export default function Create() {
-    const { data, setData, post, errors, processing } = useForm({
+    const { data, setData, post: post, errors, processing, reset } = useForm({
         body: "",
         user_id: usePage().props.auth.user.id,
     });
@@ -9,11 +9,12 @@ export default function Create() {
 
     function submit(e) {
         e.preventDefault();
-        post("/posts");
+        post("/posts", {
+            onSuccess: () => reset(),
+        });
     }
     return (
         <>
-            <Head title={component}/>
             <div className="relative mx-auto p-6 border-2 border-gray-500 rounded-lg shadow-lg bg-white">
                 <form onSubmit={submit} className="space-y-4">
                     {/* Textarea for the post content */}
