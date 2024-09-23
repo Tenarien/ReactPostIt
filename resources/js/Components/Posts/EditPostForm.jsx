@@ -19,7 +19,6 @@ export default function EditPostForm({ post, onEditComplete }) {
 
     return (
         <>
-            <Head title={ component } />
             <div className="relative pb-12 w-full">
                 <button
                     onClick={onEditComplete}
