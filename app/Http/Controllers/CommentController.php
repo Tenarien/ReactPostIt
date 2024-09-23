@@ -14,14 +14,46 @@ class CommentController extends Controller
                 'post_id' => ['required', 'integer', 'exists:posts,id'],
                 'user_id' => ['required', 'integer', 'exists:users,id'],
                 'parent_id' => ['nullable', 'integer', 'exists:comments,id'],
-                'body' => ['required', 'max:255', 'string']
+                'body' => ['required', 'max:255', 'min:1', 'string']
             ]);
 
             Comment::create($validatedData);
             return back()->with('success', 'Comment created successfully!');
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->with('error', 'Comment creation failed!');
+            return back()->withErrors($e->errors())->with('error', 'Comment creation failed!');
         }
+    }
+
+    public function update(Request $request, Comment $comment)
+    {
+        $user = auth()->user();
+        try {
+            $validatedData = $request->validate([
+                'body' => ['required', 'max:255', 'min:1']
+            ]);
+
+            if(auth()->id() && $comment->user == $user){
+                $comment->update($validatedData);
+                return back()->with('success', 'Comment updated successfully.');
+            }
+
+            return back()->with('error', 'Comment update failed!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors())->with('error', 'Comment update failed!');
+        }
+
+    }
+
+    public function destroy(Comment $comment)
+    {
+        $user = auth()->user();
+        if ($comment->user == $user) {
+            $comment->delete();
+
+            return back()->with('success', 'Comment deleted!');
+        }
+
+        return back()->with('error', 'There was an error deleting the comment!');
     }
 
     public function fetchReplies($commentId)
@@ -31,36 +63,5 @@ class CommentController extends Controller
             ->get();
 
         return response()->json($replies);
-    }
-
-    public function fetchCommentLikes(Comment $comment)
-    {
-        $comment = Comment::getComment($comment);
-
-        $hasLikedComment = $comment->likers()->where('user_id', auth()->id())->exists();
-        $likesCount = $comment->likers()->count();
-
-        return response()->json([
-            'comment_likes_count' => $likesCount,
-            'has_liked_comment' => $hasLikedComment,
-        ]);
-    }
-
-    public function like(Comment $comment)
-    {
-        try {
-            $userId = auth()->id();
-
-            if ($comment->likers()->where('user_id', $userId)->exists()) {
-                $comment->likers()->detach($userId);
-                return back()->with('message', 'You disliked this comment!');
-            }
-
-            $comment->likers()->attach($userId);
-
-            return back()->with('success', 'Liked successfully!');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return back()->withErrors($e->errors())->with('error', 'Liking failed!');
-        }
     }
 }
