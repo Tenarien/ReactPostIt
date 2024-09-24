@@ -18,7 +18,7 @@ function CreateCommentForm({ post, comment, addComment, onReplyAdded }) {
 
         submitComment(url, {
             onSuccess: (response) => {
-                const newComment = response.props.comments[response.props.comments.length - 1];
+                const newComment = response.props.post.comments[response.props.post.comments.length - 1];
                 addComment(newComment.parent_id, newComment);
                 reset();
                 setShowSubmit(false);
