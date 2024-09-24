@@ -60,15 +60,8 @@ class PostController extends Controller
             'comments.likes',
         ]);
 
-        $postLikes = $post->likes;
-        $comments = $post->comments;
-        $hasLikedPost = $post->likes()->where('user_id', auth()->id())->exists();
-
         return inertia('Show', [
             'post' => $post,
-            'comments' => $comments,
-            'postLikes' => $postLikes,
-            'hasLikedPost' => $hasLikedPost,
         ]);
     }
 
