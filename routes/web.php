@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [PostController::class, 'index'])->name('post.index');
 Route::resource('posts', PostController::class)->except('index');
 Route::get('/post/{post}', [PostController::class, 'show']);
-Route::get('/comments/{comment}/replies', [CommentController::class, 'fetchReplies']);
 Route::get('/comments/{comment}/likes', [CommentController::class, 'fetchCommentLikes']);
 
 Route::middleware('guest')->group(function () {
