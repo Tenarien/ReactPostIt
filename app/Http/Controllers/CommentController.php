@@ -64,4 +64,19 @@ class CommentController extends Controller
 
         return response()->json($replies);
     }
+
+    public function like(Comment $comment)
+    {
+        try {
+            $userId = auth()->id();
+            if ($comment->likes()->where('user_id', $userId)->exists()) {
+                $comment->likes()->detach($userId);
+                return back()->with('message', 'You disliked this comment!');
+            }
+            $comment->likes()->attach($userId);
+            return back()->with('success', 'Liked successfully!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors())->with('error', 'Liking failed!');
+        }
+    }
 }
