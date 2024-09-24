@@ -6,7 +6,7 @@ import EditPostForm from "@/Components/Posts/EditPostForm.jsx";
 import PostReactions from "@/Components/Posts/PostReactions.jsx";
 import DeleteConfirmationModal from "@/Components/Modals/DeleteConfirmationModal.jsx";
 
-export default function Show({ post, comments, hasLikedPost, postLikes, }) {
+export default function Show({ post }) {
     const { props, component } = usePage();
     const { auth } = props;
     const {delete: destroy, processing} = useForm({
@@ -60,7 +60,7 @@ export default function Show({ post, comments, hasLikedPost, postLikes, }) {
 
     return (
         <>
-            <Head title={component} />
+            <Head title={post.body} />
             <div className="relative font-medium border p-4 mt-4 rounded-lg bg-gray-50 shadow-lg">
                 {auth.user && post.user.id === auth.user.id && (<button
                     ref={buttonRef}
@@ -105,13 +105,6 @@ export default function Show({ post, comments, hasLikedPost, postLikes, }) {
                             </button>
                         </div>)}
                     </div>
-                    {/* Delete Modal */}
-                    <DeleteConfirmationModal
-                        show={showModal}
-                        onClose={handleCloseModal}
-                        onConfirm={handlePostDeletion}
-                        message={modalMessage}
-                    />
                 </div>
 
                 {editMode
@@ -127,17 +120,20 @@ export default function Show({ post, comments, hasLikedPost, postLikes, }) {
                 <div className="mt-4">
                     <PostReactions
                         post={post}
-                        hasLikedPost={hasLikedPost}
-                        postLikes={postLikes}
                     />
                 </div>
             </div>
 
-
-            {/* Comment Section */}
+            {/* CommentItem Section */}
             <CommentsSection
                 post={post}
-                comments={comments}
+            />
+            {/* Delete Modal */}
+            <DeleteConfirmationModal
+                show={showModal}
+                onClose={handleCloseModal}
+                onConfirm={handlePostDeletion}
+                message={modalMessage}
             />
         </>
     );
