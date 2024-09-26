@@ -36,6 +36,14 @@ function Avatar({ user }) {
         };
     }, []);
 
+    const resetProfileAnimation = () => {
+        setTimeout(() => setProfileClicked(false), 300);
+    };
+
+    const resetLogoutAnimation = () => {
+        setTimeout(() => setLogoutClicked(false), 300);
+    };
+
 
     return (
         <>
@@ -71,8 +79,13 @@ function Avatar({ user }) {
                     >
                         <MotionLink
                             className="py-2 px-4"
+                            href={`/profile`}
                             as="button"
-                            onClick={() => setProfileClicked(!logoutClicked)}
+                            onClick={() => {
+                                setProfileClicked(true);
+                                resetProfileAnimation();
+                                setShowMenu(false);
+                            }}
                             initial="initial"
                             animate={profileClicked ? "clicked" : "initial"}
                             variants={variants}
@@ -87,7 +100,11 @@ function Avatar({ user }) {
                             href={`/logout`}
                             method="post"
                             as="button"
-                            onClick={() => setLogoutClicked(!logoutClicked)}
+                            onClick={() => {
+                                setLogoutClicked(true);
+                                resetLogoutAnimation();
+                                setShowMenu(false);
+                            }}
                             initial="initial"
                             animate={logoutClicked ? "clicked" : "initial"}
                             variants={variants}
