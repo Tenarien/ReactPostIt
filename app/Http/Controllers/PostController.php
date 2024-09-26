@@ -6,7 +6,7 @@ use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
-class PostController extends Controller
+class PostController
 {
     /**
      * Display a listing of the resource.
