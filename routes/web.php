@@ -3,12 +3,15 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PostController::class, 'index'])->name('post.index');
 Route::resource('posts', PostController::class)->except('index');
 Route::get('/post/{post}', [PostController::class, 'show']);
 Route::get('/comments/{comment}/likes', [CommentController::class, 'fetchCommentLikes']);
+
+Route::get('/profile/{user}', [UserController::class, 'show']);
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'registerForm'])->name('register.form');
@@ -31,6 +34,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/posts/{post}/like', [PostController::class, 'like']);
     Route::post('/comments/{comment}/like', [CommentController::class, 'like']);
+
+    Route::get('/profile', [UserController::class, 'index']);
 });
 
 
