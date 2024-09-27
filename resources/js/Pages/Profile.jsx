@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {usePage} from "@inertiajs/react";
+import {Head, usePage} from "@inertiajs/react";
 import { motion } from "framer-motion";
 
 export default function Profile({ user }) {
@@ -17,6 +17,7 @@ export default function Profile({ user }) {
 
     return (
         <>
+            <Head title={user.name}/>
             <div className="flex justify-center items-center">
                 <div className="bg-white shadow-md overflow-hidden w-full max-w-4xl">
                     {/* Header */}

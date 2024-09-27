@@ -10,6 +10,7 @@ export default function Create() {
     function submit(e) {
         e.preventDefault();
         post("/posts", {
+            preserveScroll: true,
             onSuccess: () => reset(),
         });
     }

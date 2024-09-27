@@ -63,6 +63,7 @@ function CommentItem({ comment, post, onDelete, addComment }) {
         e.preventDefault();
         try {
             await destroy(`/comments/${comment.id}`, {
+                preserveScroll: true,
                 onSuccess: () => {
                     if (onDelete) onDelete(comment.id);
                 }

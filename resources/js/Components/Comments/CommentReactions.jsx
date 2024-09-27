@@ -39,6 +39,7 @@ export default function CommentReactions({ comment }) {
 
         try {
             await submitPost(`/comments/${comment.id}/like`, {
+                preserveScroll: true,
                 liked: !likedComment,
                 user_id: props.auth.user ? props.auth.user.id : undefined,
             });

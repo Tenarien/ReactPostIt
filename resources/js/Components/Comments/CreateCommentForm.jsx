@@ -17,6 +17,7 @@ function CreateCommentForm({ post, comment, addComment, onReplyAdded }) {
         const url = `/posts/${post.id}/comments`;
 
         submitComment(url, {
+            preserveScroll: true,
             onSuccess: (response) => {
                 const newComment = response.props.post.comments[response.props.post.comments.length - 1];
                 addComment(newComment.parent_id, newComment);

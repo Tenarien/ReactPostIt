@@ -12,6 +12,7 @@ export default function EditCommentForm({ comment, onEditComplete, onEditCancel 
     function submit(e) {
         e.preventDefault();
         put(`/comments/${comment.id}`, {
+            preserveScroll: true,
             onSuccess: () => onEditComplete(data.body),
         });
 

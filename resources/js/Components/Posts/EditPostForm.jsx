@@ -12,6 +12,7 @@ export default function EditPostForm({ post, onEditComplete }) {
     function submit(e) {
         e.preventDefault();
         put(`/posts/${post.id}`, {
+            preserveScroll: true,
             onSuccess: () => onEditComplete(),
         });
 
