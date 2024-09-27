@@ -1,25 +1,66 @@
-import Layout from "@/Layouts/Layout.jsx";
 import CreatePostForm from "@/Components/Posts/CreatePostForm.jsx";
-import {Head, Link, usePage} from "@inertiajs/react";
-import {formatDistanceToNow} from "date-fns";
+import {Head, Link, router, usePage} from "@inertiajs/react";
+import { formatDistanceToNow } from "date-fns";
+import {useEffect, useState} from "react";
+import {SyncLoader} from "react-spinners";
 
 export default function Home({ posts }) {
-    const { component, props } = usePage();
+    const { props } = usePage();
+    const [postData, setPostData] = useState(posts);
+    const [loading, setLoading] = useState(false);
+    const [nextPage, setNextPage] = useState(postData.next_page_url);
+
+    const loadMorePosts = async () => {
+        if (nextPage && !loading) {
+
+            setLoading(true);
+
+            router.get(nextPage, {}, {
+                preserveScroll: true,
+                preserveState: true,
+                replace: true,
+                only: ['posts'],
+
+                onSuccess: (page) => {
+                    setPostData({
+                        ...page.props.posts,
+                        data: [...postData.data, ...page.props.posts.data], // Append new posts
+                    });
+                    setNextPage(page.props.posts.next_page_url);
+                },
+                onError: (error) => {
+                    console.error('Error loading more posts:', error);
+                },
+            });
+            setLoading(false);
+        }
+    };
+
+    const handleScroll = () => {
+        if (window.innerHeight + document.documentElement.scrollTop + 50 >= document.documentElement.offsetHeight && !loading) {
+            loadMorePosts();
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll); // Clean up event listener on component unmount
+    }, [nextPage, loading]);
 
     return (
         <>
-            <Head title={component} />
-            {props.auth.user && (<CreatePostForm />)}
+            <Head title="Home" />
+            {props.auth.user && <CreatePostForm />}
             <div className="space-y-6 mt-6 w-full mx-auto">
                 {/* Posts List */}
-                {posts.data.map(post => (
+                {postData.data.map(post => (
                     <div key={post.id} className="p-4 border rounded-lg shadow-md bg-white border-gray-200">
                         {/* Post Header */}
                         <div className="flex justify-between items-center mb-2">
                             <span className="font-bold text-lg">{post.user.name}</span>
                             <span className="text-sm text-gray-500">
-                    {formatDistanceToNow(new Date(post.created_at), {addSuffix: true})}
-                </span>
+                                {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
+                            </span>
                         </div>
                         {/* Post Body */}
                         <p className="font-medium text-gray-800">{post.body}</p>
@@ -32,28 +73,16 @@ export default function Home({ posts }) {
                         </Link>
                     </div>
                 ))}
-
-                {/* Pagination Links */}
-                <div className="flex justify-center mt-8 space-x-2">
-                    {posts.links.map(link => (
-                        link.url ? (
-                            <Link
-                                key={link.label}
-                                href={link.url}
-                                dangerouslySetInnerHTML={{__html: link.label}}
-                                className={`px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ease-in-out ${
-                                    link.active ? 'bg-orange-500 text-white' : 'text-orange-500 hover:bg-orange-100'
-                                }`}
-                            />
-                        ) : (
-                            <span
-                                key={link.label}
-                                dangerouslySetInnerHTML={{__html: link.label}}
-                                className="px-4 py-2 text-sm text-gray-400"
-                            />
-                        )
-                    ))}
-                </div>
+                {/* Loading Spinner */}
+                {loading &&
+                    <div className="text-center py-10">
+                        <SyncLoader
+                            color="#ff6600"
+                            loading={loading}
+                            size={20}
+                        />
+                    </div>
+                }
             </div>
         </>
     );
