@@ -13,9 +13,11 @@ class PostController
      */
     public function index()
     {
-        $posts = Post::latest()->with(['user', 'likes'])->paginate(5);
+        $posts = Post::latest()->with(['user', 'likes'])->paginate(10);
 
-        return inertia('Home', ['posts' => $posts]);
+        return inertia('Home', [
+            'posts' => $posts,
+        ]);
     }
 
     /**
