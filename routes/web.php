@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/comments/{comment}/like', [CommentController::class, 'like']);
 
     Route::get('/profile', [UserController::class, 'index']);
+    Route::put('/profile/update/{user}', [AuthController::class, 'update']);
 });
 
 
