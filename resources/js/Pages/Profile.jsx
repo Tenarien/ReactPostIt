@@ -1,19 +1,18 @@
 import React, {useState} from "react";
 import {Head, usePage} from "@inertiajs/react";
 import { motion } from "framer-motion";
+import EditProfileForm from "@/Components/Auth/EditProfileForm.jsx";
 
 export default function Profile({ user }) {
-    const [isEditing, setIsEditing] = useState(false);
-    const username = user.name.substring(0, 1).toUpperCase();
     const { props } = usePage();
     const { auth } = props;
-
+    const [isEditing, setIsEditing] = useState(false);
     const isCurrentUser = auth.user ? auth.user.id === user.id : false;
+    const username = user.name.substring(0, 1).toUpperCase();
 
-    const expandVariants = {
-        hidden: { height: 0, opacity: 0 },
-        visible: { height: "auto", opacity: 1 },
-    };
+    const onCompleteEdit = () => {
+        setIsEditing(false);
+    }
 
     return (
         <>
@@ -52,60 +51,12 @@ export default function Profile({ user }) {
                             </p>
                         </div>
 
-                        {/* Edit Profile Form with Framer Motion (Visible only if the current user is editing) */}
-                        {isCurrentUser && (
-                            <motion.div
-                                className="overflow-hidden"
-                                initial="hidden"
-                                animate={isEditing ? "visible" : "hidden"}
-                                variants={expandVariants}
-                                transition={{ duration: 0.5, ease: "easeInOut" }}
-                            >
-                                <div className="p-6 bg-gray-50">
-                                    <div className="space-y-4">
-                                        <h2 className="text-2xl font-bold text-gray-800 mb-4">Edit Profile</h2>
-                                        <form className="space-y-4">
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-700">Name</label>
-                                                    <input
-                                                        type="text"
-                                                        defaultValue={user.name || ""}
-                                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-700">Email</label>
-                                                    <input
-                                                        type="email"
-                                                        defaultValue={user.email || ""}
-                                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700">Bio</label>
-                                                <textarea
-                                                    rows="4"
-                                                    defaultValue={user.bio || ""}
-                                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
-                                                />
-                                            </div>
-
-                                            <div className="text-right">
-                                                <button
-                                                    type="submit"
-                                                    className="bg-orange-500 text-white px-4 py-2 rounded-md shadow hover:bg-orange-600 transition-all duration-300"
-                                                >
-                                                    Save Changes
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        )}
+                        <EditProfileForm
+                            user={user}
+                            onCompleteEdit={onCompleteEdit}
+                            isEditing={isEditing}
+                            isCurrentUser={isCurrentUser}
+                        />
                     </div>
                 </div>
             </div>
