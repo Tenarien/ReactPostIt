@@ -25,7 +25,7 @@ function CreateCommentForm({ post, comment, addComment, onReplyAdded }) {
                 setShowSubmit(false);
                 if (onReplyAdded) onReplyAdded();
             },
-            onError: () => console.error('CommentItem submission failed'),
+            onError: () => console.error('Comment submission failed'),
         });
     }
 
