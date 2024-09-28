@@ -69,4 +69,25 @@ class AuthController
         }
     }
 
+    public function update(Request $request)
+    {
+        $user = auth()->user();
+        try {
+            $validatedData = $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
+                'bio' => ['nullable', 'string', 'max:255'],
+            ]);
+
+            if($user){
+                $user->update($validatedData);
+                return back()->with('success', 'Updated your information successfully.');
+            }
+
+            return back()->with('error', 'User update failed failed!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors())->with('error', 'User update failed!');
+        }
+    }
+
 }
