@@ -1,7 +1,7 @@
 import CreatePostForm from "@/Components/Posts/CreatePostForm.jsx";
 import {Head, Link, router, usePage} from "@inertiajs/react";
 import { formatDistanceToNow } from "date-fns";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {SyncLoader} from "react-spinners";
 
 export default function Home({ posts }) {
@@ -10,14 +10,21 @@ export default function Home({ posts }) {
     const [loading, setLoading] = useState(false);
     const [nextPage, setNextPage] = useState(postData.next_page_url);
 
+    const addNewPost = (newPost) => {
+        setPostData((prevData) => ({
+            ...prevData,
+            data: [newPost, ...prevData.data],
+        }));
+    };
+
     const loadMorePosts = async () => {
         if (nextPage && !loading) {
-
             setLoading(true);
 
             router.get(nextPage, {}, {
                 preserveScroll: true,
                 preserveState: true,
+                preserveUrl: true,
                 replace: true,
                 only: ['posts'],
 
@@ -27,12 +34,13 @@ export default function Home({ posts }) {
                         data: [...postData.data, ...page.props.posts.data], // Append new posts
                     });
                     setNextPage(page.props.posts.next_page_url);
+                    setLoading(false);
                 },
                 onError: (error) => {
                     console.error('Error loading more posts:', error);
+                    setLoading(false);
                 },
             });
-            setLoading(false);
         }
     };
 
@@ -50,7 +58,7 @@ export default function Home({ posts }) {
     return (
         <>
             <Head title="Home" />
-            {props.auth.user && <CreatePostForm />}
+            {props.auth.user && <CreatePostForm addNewPost={addNewPost} />}
             <div className="space-y-6 mt-6 w-full mx-auto">
                 {/* Posts List */}
                 {postData.data.map(post => (
@@ -74,15 +82,15 @@ export default function Home({ posts }) {
                     </div>
                 ))}
                 {/* Loading Spinner */}
-                {loading &&
-                    <div className="text-center py-10">
+                {loading && (
+                    <div className="text-center mt-6">
                         <SyncLoader
                             color="#ff6600"
                             loading={loading}
                             size={20}
                         />
                     </div>
-                }
+                )}
             </div>
         </>
     );
