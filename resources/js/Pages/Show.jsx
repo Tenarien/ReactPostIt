@@ -6,7 +6,7 @@ import EditPostForm from "@/Components/Posts/EditPostForm.jsx";
 import PostReactions from "@/Components/Posts/PostReactions.jsx";
 import DeleteConfirmationModal from "@/Components/Modals/DeleteConfirmationModal.jsx";
 
-export default function Show({ post }) {
+export default function Show({ post, comments }) {
     const { props, component } = usePage();
     const { auth } = props;
     const {delete: destroy, processing} = useForm({
@@ -21,7 +21,6 @@ export default function Show({ post }) {
 
     const optionsRef = useRef(null);
     const buttonRef = useRef(null);
-
     useEffect(() => {
         function handleClickOutside(e) {
             if (optionsRef.current && !optionsRef.current.contains(e.target) &&
@@ -127,6 +126,8 @@ export default function Show({ post }) {
             {/* CommentItem Section */}
             <CommentsSection
                 post={post}
+                comments={comments.data}
+                nextPageUrl={comments.next_page_url}
             />
             {/* Delete Modal */}
             <DeleteConfirmationModal
