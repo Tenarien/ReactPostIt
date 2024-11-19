@@ -1,14 +1,56 @@
-import React, { useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import CommentItem from './CommentItem.jsx';
 import CreateCommentForm from './CreateCommentForm.jsx';
+import {router} from "@inertiajs/react";
+import {SyncLoader} from "react-spinners";
 
-function CommentsSection({ post }) {
-    const [comments, setComments] = useState(post.comments);
+function CommentsSection({ post, comments, nextPageUrl }) {
+    const [allComments, setAllComments] = useState(comments);
+    const [loading, setLoading] = useState(false);
+    const [nextPage, setNextPage] = useState(nextPageUrl);
+
+    const loadMoreComments = async () => {
+        if (nextPage && !loading) {
+
+            setLoading(true);
+
+            router.get(nextPage, {}, {
+                preserveScroll: true,
+                preserveState: true,
+                preserveUrl: true,
+                replace: true,
+
+                onSuccess: (response) => {
+                    const { data: newComments, next_page_url: newNextPageUrl } = response.props.comments;
+                    setAllComments(prevComments => [...prevComments, ...newComments]);
+                    console.log("response: ", response)
+                    console.log("new comments: ", newComments)
+                    setNextPage(newNextPageUrl);
+                    setLoading(false);
+                },
+                onError: (error) => {
+                    console.error('Error loading more posts:', error);
+                    setLoading(false);
+                },
+            });
+        }
+    };
+
+    const handleScroll = () => {
+        if (window.innerHeight + document.documentElement.scrollTop + 50 >= document.documentElement.offsetHeight && !loading) {
+            loadMoreComments();
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll); // Clean up event listener on component unmount
+    }, [nextPage, loading]);
 
     const addComment = (parentId, newComment) => {
         if (parentId === null) {
             // Add a top-level comment
-            setComments(prevComments => [...prevComments, newComment]);
+            setAllComments(prevComments => [...prevComments, newComment]);
             return;
         }
 
@@ -29,7 +71,7 @@ function CommentsSection({ post }) {
             });
         };
 
-        setComments(prevComments => recursiveAddComment(prevComments));
+        setAllComments(prevComments => recursiveAddComment(prevComments));
     };
 
     const deleteComment = (commentId) => {
@@ -42,7 +84,7 @@ function CommentsSection({ post }) {
                 }));
         };
 
-        setComments((prevComments) => recursiveDelete(prevComments));
+        setAllComments((prevComments) => recursiveDelete(prevComments));
     };
 
     return (
@@ -52,11 +94,12 @@ function CommentsSection({ post }) {
             {/* CommentItem Form */}
             <CreateCommentForm
                 post={post}
+                comments={allComments}
                 addComment={addComment}
             />
 
             <div className="mt-4 space-y-2">
-                {comments
+                {allComments
                     .filter(comment => !comment.parent_id) // Filter for top-level comments only
                     .map(comment => (
                         <CommentItem
@@ -68,6 +111,16 @@ function CommentsSection({ post }) {
                         />
                     ))}
             </div>
+            {/* Loading Spinner */}
+            {loading && (
+                <div className="text-center mt-6">
+                    <SyncLoader
+                        color="#ff6600"
+                        loading={loading}
+                        size={20}
+                    />
+                </div>
+            )}
         </div>
     );
 }
