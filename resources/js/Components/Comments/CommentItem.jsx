@@ -86,7 +86,7 @@ function CommentItem({ comment, post, onDelete, addComment }) {
     };
 
     return (
-        <div key={comment.id} className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm relative">
+        <div key={comment.id} className="lg:pl-4 pl-0.5 pt-4 pb-4  bg-white border-l border-t border-b border-gray-200 rounded-lg shadow-sm relative">
 
             {/* CommentItem Header */}
             <div className="flex justify-between items-center mb-2">
@@ -190,7 +190,7 @@ function CommentItem({ comment, post, onDelete, addComment }) {
 
             {/* Rendered Replies recursively */}
             {showReplies && comment.replies.length > 0 && (
-                <div className="mt-2 ml-4 border-l border-gray-500 pl-2">
+                <div className="mt-2 border-l border-gray-500">
                     {comment.replies.slice(0, visibleReplies)
                         .map(reply => (
                             <CommentItem
