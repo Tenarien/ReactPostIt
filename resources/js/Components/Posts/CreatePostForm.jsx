@@ -1,6 +1,6 @@
 import {Head, useForm, usePage} from "@inertiajs/react";
 
-export default function Create() {
+export default function CreatePostForm({ addNewPost }) {
     const { data, setData, post: post, errors, processing, reset } = useForm({
         body: "",
         user_id: usePage().props.auth.user.id,
@@ -11,7 +11,11 @@ export default function Create() {
         e.preventDefault();
         post("/posts", {
             preserveScroll: true,
-            onSuccess: () => reset(),
+            onSuccess: (response) => {
+                const newPost = response.props.posts.data[0];
+                addNewPost(newPost);
+                reset();
+            }
         });
     }
     return (
