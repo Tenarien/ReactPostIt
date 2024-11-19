@@ -57,13 +57,14 @@ class PostController
         $post->load([
             'user',
             'likes',
-            'comments.user',
-            'comments.replies',
-            'comments.likes',
         ]);
+
+        // Paginate comments and their relationships
+        $comments = Comment::getCommentsForPostPaginated($post);
 
         return inertia('Show', [
             'post' => $post,
+            'comments' => $comments,
         ]);
     }
 
