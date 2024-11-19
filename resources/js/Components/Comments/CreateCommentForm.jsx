@@ -1,10 +1,11 @@
-import React, { useState} from 'react';
+import React, {useState} from 'react';
 import {useForm, usePage} from "@inertiajs/react";
 
-function CreateCommentForm({ post, comment, addComment, onReplyAdded }) {
+function CreateCommentForm({post, comments, comment, addComment, onReplyAdded}) {
+    const {props} = usePage();
     const [showSubmit, setShowSubmit] = useState(false);
 
-    const { data, setData, post: submitComment, processing: processing, errors, reset } = useForm({
+    const {data, setData, post: submitComment, processing: processing, errors, reset} = useForm({
         body: '',
         post_id: post.id,
         user_id: usePage().props.auth.user ? usePage().props.auth.user.id : undefined,
@@ -19,7 +20,18 @@ function CreateCommentForm({ post, comment, addComment, onReplyAdded }) {
         submitComment(url, {
             preserveScroll: true,
             onSuccess: (response) => {
-                const newComment = response.props.post.comments[response.props.post.comments.length - 1];
+                const newComment = {
+                    id: Date.now(),
+                    body: data.body,
+                    post_id: data.post_id,
+                    user_id: data.user_id,
+                    parent_id: data.parent_id ?? null,
+                    user: props.auth.user,
+                    replies: [],
+                    likes: [],
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString(),
+                };
                 addComment(newComment.parent_id, newComment);
                 reset();
                 setShowSubmit(false);
