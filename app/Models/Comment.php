@@ -54,6 +54,14 @@ class Comment extends Model
             ->get();
     }
 
+    public static function getCommentsForPostPaginated($post)
+    {
+        return self::where('post_id', $post->id)
+            ->whereNull('parent_id')
+            ->with('user', 'replies')
+            ->paginate(10);
+    }
+
     public static function getComment($comment)
     {
         return self::where('id', $comment->id)
