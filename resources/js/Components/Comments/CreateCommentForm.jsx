@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {useForm, usePage} from "@inertiajs/react";
 
 function CreateCommentForm({post, comments, comment, addComment, onReplyAdded}) {
-    const {props} = usePage();
+    const { props} = usePage();
     const [showSubmit, setShowSubmit] = useState(false);
 
     const {data, setData, post: submitComment, processing: processing, errors, reset} = useForm({
@@ -20,19 +20,10 @@ function CreateCommentForm({post, comments, comment, addComment, onReplyAdded}) 
         submitComment(url, {
             preserveScroll: true,
             onSuccess: (response) => {
-                const newComment = {
-                    id: Date.now(),
-                    body: data.body,
-                    post_id: data.post_id,
-                    user_id: data.user_id,
-                    parent_id: data.parent_id ?? null,
-                    user: props.auth.user,
-                    replies: [],
-                    likes: [],
-                    created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString(),
-                };
-                addComment(newComment.parent_id, newComment);
+                const flashComment = response.props.flash.comment;
+                if (flashComment) {
+                    addComment(flashComment.parent_id, flashComment);
+                }
                 reset();
                 setShowSubmit(false);
                 if (onReplyAdded) onReplyAdded();
