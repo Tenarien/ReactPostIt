@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FollowController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +38,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [UserController::class, 'index']);
     Route::put('/profile/update/{user}', [AuthController::class, 'update']);
+
+    Route::post('/profile/{user}/follow', [FollowController::class, 'store']);
 });
 
 
