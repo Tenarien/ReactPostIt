@@ -10,12 +10,28 @@ class UserController
     {
         $user = User::where('id', auth()->id())->firstOrFail();
 
-        return inertia('Profile', ['user' => $user]);
+        $posts = $user->posts()->orderBy('created_at', 'desc')->paginate(10);
+        $posts->load('user', 'likes');
+
+        $user->load('following', 'followers');
+
+        return inertia('Profile', [
+            'user' => $user,
+            'posts' => $posts,
+        ]);
     }
 
     public function show(User $user)
     {
-        return inertia('Profile', ['user' => $user]);
+        $posts = $user->posts()->orderBy('created_at', 'desc')->paginate(10);
+        $posts->load('user', 'likes');
+
+        $user->load('following', 'followers');
+
+        return inertia('Profile', [
+            'user' => $user,
+            'posts' => $posts,
+        ]);
     }
 
 }
