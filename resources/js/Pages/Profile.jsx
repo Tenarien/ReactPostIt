@@ -27,7 +27,6 @@ export default function Profile({ user }) {
                             </div>
                         </div>
                         <h1 className="text-3xl font-bold">{user.name || "John Doe"}</h1>
-                        <p className="text-sm opacity-75">{user.email || "john.doe@example.com"}</p>
 
                         {/* Button to Trigger Form (Visible only if the current user is viewing their own profile) */}
                         {isCurrentUser && (
