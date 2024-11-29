@@ -17,8 +17,15 @@ class CommentController
                 'body' => ['required', 'max:255', 'min:1', 'string']
             ]);
 
-            Comment::create($validatedData);
-            return back()->with('success', 'Comment created successfully!');
+            $comment = Comment::create($validatedData);
+            $comment->load('user', 'replies');
+            // Ensure parent_id is included as null if not set
+            $comment->parent_id = $comment->parent_id ?? null;
+
+            return back()->with([
+                'success' => 'Comment created successfully!',
+                'comment' => $comment
+            ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return back()->withErrors($e->errors())->with('error', 'Comment creation failed!');
         }
