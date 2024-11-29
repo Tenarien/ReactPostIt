@@ -65,7 +65,11 @@ export default function Home({ posts }) {
                     <div key={post.id} className="p-4 border rounded-lg shadow-md bg-white border-gray-200">
                         {/* Post Header */}
                         <div className="flex justify-between items-center mb-2">
-                            <span className="font-bold text-lg">{post.user.name}</span>
+                            <Link
+                                href={`/profile/${post.user.id}`}
+                            >
+                                <span className="text-xl font-bold text-orange-500 hover:text-opacity-70 transition-all duration-300 mr-4">{post.user.name}</span>
+                            </Link>
                             <span className="text-sm text-gray-500">
                                 {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
                             </span>

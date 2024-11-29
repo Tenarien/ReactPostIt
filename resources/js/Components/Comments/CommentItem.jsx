@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import CommentReactions from "@/Components/Comments/CommentReactions.jsx";
 import {Link, useForm, usePage} from "@inertiajs/react";
-import { formatDistanceToNow } from "date-fns";
+import {formatDistanceToNow} from "date-fns";
 import EditCommentForm from "@/Components/Comments/EditCommentForm.jsx";
 import DeleteConfirmationModal from "@/Components/Modals/DeleteConfirmationModal.jsx";
 import CreateCommentForm from "@/Components/Comments/CreateCommentForm.jsx";
 
-function CommentItem({ comment, post, onDelete, addComment }) {
+function CommentItem({comment, post, onDelete, addComment}) {
     const [showReplies, setShowReplies] = useState(false);
     const [loadingReplies, setLoadingReplies] = useState(false);
     const [showCommentOptions, setShowCommentOptions] = useState(false);
@@ -16,12 +16,12 @@ function CommentItem({ comment, post, onDelete, addComment }) {
     const [modalMessage, setModalMessage] = useState("");
     const [visibleReplies, setVisibleReplies] = useState(5);
     const [thisComment, setThisComment] = useState(comment);
-    const { props } = usePage();
-    const { auth } = props;
+    const {props} = usePage();
+    const {auth} = props;
     const optionsRef = useRef(null);
     const buttonRef = useRef(null);
 
-    const { delete: destroy, processing } = useForm({
+    const {delete: destroy, processing} = useForm({
         user_id: auth.user ? auth.user.id : undefined,
         body: comment.body,
     });
@@ -84,18 +84,27 @@ function CommentItem({ comment, post, onDelete, addComment }) {
     const handleEditCancel = () => {
         setEditMode(false);
     };
-
     return (
-        <div key={comment.id} className="lg:pl-4 pl-0.5 pt-4 pb-4  bg-white border-l border-t border-b border-gray-200 rounded-lg shadow-sm relative">
+        <div key={comment.id}
+             className="lg:pl-4 pl-0.5 pt-4 pb-4  bg-white border-l border-t border-b border-gray-200 rounded-lg shadow-sm relative">
 
             {/* CommentItem Header */}
             <div className="flex justify-between items-center mb-2">
                 <div className="text-sm text-gray-700">
-                    <span className="font-semibold text-orange-500 mr-2">
-                        {comment.user ? comment.user.name : 'Unknown'}
+                    <Link
+                        href={`/profile/${comment.user.id}`}
+                        as="button"
+                    >
+                        <span
+                            className="font-semibold text-orange-500 mr-2 hover:text-opacity-70 transition-all duration-300">
+                            {comment.user ? comment.user.name : 'Unknown'}
+                        </span>
+                    </Link>
+                    <span className="text-xs text-gray-500">
+                        {formatDistanceToNow(new Date(comment.created_at), {addSuffix: true})}
                     </span>
                     <span className="text-xs text-gray-500">
-                        {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
+                        {comment.created_at && comment.created_at !== comment.updated_at ? ' (edited)' : ''}
                     </span>
                 </div>
                 {auth.user && comment.user.id === auth.user.id && (
@@ -112,7 +121,8 @@ function CommentItem({ comment, post, onDelete, addComment }) {
                     className={`absolute z-40 right-0 transition-all duration-500 ease-in-out ${showCommentOptions ? 'opacity-100' : 'opacity-0'}`}
                 >
                     {showCommentOptions && comment.user.id === auth.user.id && (
-                        <div className="absolute text-center bg-gray-100 w-20 py-4 shadow-lg rounded border border-orange-500 flex right-5 flex-col gap-2">
+                        <div
+                            className="absolute text-center bg-gray-100 w-20 py-4 shadow-lg rounded border border-orange-500 flex right-5 flex-col gap-2">
                             <form onSubmit={handleCommentDeletion}>
                                 <button
                                     onClick={handleOpenDeleteModal}
@@ -140,7 +150,8 @@ function CommentItem({ comment, post, onDelete, addComment }) {
 
             {/* CommentItem Body */}
             {editMode
-                ? <EditCommentForm comment={thisComment} onEditComplete={handleEditComplete} onEditCancel={handleEditCancel} />
+                ? <EditCommentForm comment={thisComment} onEditComplete={handleEditComplete}
+                                   onEditCancel={handleEditCancel}/>
                 : <p className="text-gray-800">{thisComment.body}</p>
             }
 

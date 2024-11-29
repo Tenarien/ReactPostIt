@@ -74,7 +74,11 @@ export default function Show({ post, comments }) {
                 {/* Post Header */}
                 <div className="flex justify-between items-center mb-4">
                     <div>
-                        <span className="text-xl font-bold text-gray-800 mr-4">{post.user.name}</span>
+                        <Link
+                            href={`/profile/${post.user.id}`}
+                        >
+                            <span className="text-xl font-bold text-orange-500 hover:text-opacity-70 transition-all duration-300 mr-4">{post.user.name}</span>
+                        </Link>
                         <span className="text-sm text-gray-500 font-light">
                             {formatDistanceToNow(new Date(post.created_at), {addSuffix: true})}
                         </span>
