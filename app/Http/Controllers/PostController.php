@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PostController
@@ -11,9 +12,23 @@ class PostController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::latest()->with(['user', 'likes'])->paginate(10);
+        $user = auth()->user();
+        $request->validate([
+            'following' => ['boolean']
+        ]);
+
+        $following = $request->input('following', false);
+
+        if($following){
+            $followedUsers = $user->following()->pluck('users.id');
+            $posts = Post::latest()->whereIn('user_id', $followedUsers)->with(['user', 'likes'])->paginate(10);
+        } else {
+            $posts = Post::latest()->with(['user', 'likes'])->paginate(10);
+        }
+
+
 
         return inertia('Home', [
             'posts' => $posts,
