@@ -23,7 +23,7 @@ export default function Profile({user, posts}) {
                 <div className="bg-white shadow-md overflow-hidden w-full">
                     {/* Header */}
                     <div className="flex flex-col justify-between">
-                        <div className="relative bg-orange-500 p-8 pb-20 text-white text-center rounded-t-lg">
+                        <div className={`relative bg-orange-500 p-8 text-white text-center rounded-t-lg ${isCurrentUser ?? 'pb-20'}`}>
                             <div className="relative w-24 h-24 mx-auto mb-4 border-4 border-white rounded-full ">
                                 <div
                                     className="flex justify-center items-center bg-white w-full h-full rounded-full border-4 border-orange-500">
@@ -31,9 +31,10 @@ export default function Profile({user, posts}) {
                                 </div>
                             </div>
                             <h1 className="text-3xl font-bold">{user.name || "John Doe"}</h1>
-                        </div>
-                        <div className="relative bg-orange-500 text-white p-6 flex">
-                            <FollowSection user={user}/>
+
+                            <div className="bg-orange-500 text-white p-6 flex">
+                                <FollowSection user={user}/>
+                            </div>
 
                             {/* Button to Trigger Form (Visible only if the current user is viewing their own profile) */}
                             {isCurrentUser && (
