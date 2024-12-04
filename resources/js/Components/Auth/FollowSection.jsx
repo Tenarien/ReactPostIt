@@ -45,7 +45,7 @@ export default function FollowSection({user}) {
 
     return (
         <>
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
                 <div className="flex space-x-4">
                     <p>Followers: {followers}</p>
                     <span>|</span>
