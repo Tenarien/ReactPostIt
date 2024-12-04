@@ -13,7 +13,8 @@ class UserController
         $posts = $user->posts()->orderBy('created_at', 'desc')->paginate(10);
         $posts->load('user', 'likes');
 
-        $user->load('following', 'followers');
+        $user->load('following', 'followers')
+            ->makeVisible('email');
 
         return inertia('Profile', [
             'user' => $user,
