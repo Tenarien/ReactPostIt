@@ -21,7 +21,7 @@ class PostController
 
         $following = $request->input('following', false);
 
-        if($following){
+        if($following && auth()->check()){
             $followedUsers = $user->following()->pluck('users.id');
             $posts = Post::latest()->whereIn('user_id', $followedUsers)->with(['user', 'likes'])->paginate(10);
         } else {

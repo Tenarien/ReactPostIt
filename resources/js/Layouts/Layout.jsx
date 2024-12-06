@@ -6,7 +6,6 @@ import LoginForm from "@/Components/Auth/LoginForm.jsx";
 export default function Layout({ children }) {
     const { props } = usePage();
     const { auth } = props;
-
     return (
         <>
             <header className="sticky w-full top-0 z-50 py-2 px-10 bg-zinc-600 text-white shadow-lg">
@@ -15,7 +14,7 @@ export default function Layout({ children }) {
                     className="flex space-x-2"
                     >
                         <Link className="p-2 hover:bg-zinc-400 hover:bg-opacity-50 rounded-lg" href="/">Home</Link>
-                        <Link className="p-2 hover:bg-zinc-400 hover:bg-opacity-50 rounded-lg" href="/?following=1">Following</Link>
+                        {auth.user && <Link className="p-2 hover:bg-zinc-400 hover:bg-opacity-50 rounded-lg" href="/?following=1">Following</Link>}
                     </div>
 
 
