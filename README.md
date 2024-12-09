@@ -92,14 +92,14 @@ This project is licensed under the ***MIT License***.
 
 ## Screenshots 
 - Home Page
-https://github.com/Tenarien/ReactPostIt/blob/main/images/home.png?raw=true
+![Home Page](/images/home.png?raw=true "Home Page")
 - Login
-https://github.com/Tenarien/ReactPostIt/blob/main/images/login.png?raw=true
+![Login](/images/login.png?raw=true "Login")
 - Register
-https://github.com/Tenarien/ReactPostIt/blob/main/images/register.png?raw=true
+![Register](/images/register.png?raw=true "Register")
 - Post
-https://github.com/Tenarien/ReactPostIt/blob/main/images/post.png?raw=true
+![Post](/images/post.png?raw=true "Post")
 - Current User Profile
-https://github.com/Tenarien/ReactPostIt/blob/main/images/profile.png?raw=true
+![Current User Profile](/images/profile.png?raw=true "Current User Profile")
 - Other User Profile
-https://github.com/Tenarien/ReactPostIt/blob/main/images/profile2.png?raw=true
+![Other User Profile](/images/profile2.png?raw=true "Other User Profile")
