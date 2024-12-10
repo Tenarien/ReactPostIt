@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Notifications;
 use App\Models\Comment;
+use App\Models\Notification;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -67,7 +69,7 @@ class PostController
     /**
      * Display the specified resource.
      */
-    public function show(Post $post)
+    public function show(Request $request, Post $post)
     {
         $post->load([
             'user',
@@ -77,9 +79,21 @@ class PostController
         // Paginate comments and their relationships
         $comments = Comment::getCommentsForPostPaginated($post);
 
+        $highlightedComment = null;
+        if($request) {
+            $highlightedComment = Comment::where('id', $request->query('comment'))
+                ->with('user', 'replies')
+                ->first();
+            if($highlightedComment) {
+                $highlightedComment->setAttribute('highlighted', true);
+            }
+        }
+
+
         return inertia('Show', [
             'post' => $post,
             'comments' => $comments,
+            'highlightedComment' => $highlightedComment,
         ]);
     }
 
@@ -130,10 +144,11 @@ class PostController
         return redirect('/')->with('error', 'There was an error deleting the post!');
     }
 
-    public function like(Post $post)
+    public function like(Request $request, Post $post)
     {
         try {
             $userId = auth()->id();
+            $user = User::find($request['user_id']);
 
             if ($post->likes()->where('user_id', $userId)->exists()) {
                 $post->likes()->detach($userId);
@@ -141,6 +156,21 @@ class PostController
             }
 
             $post->likes()->attach($userId);
+
+            $notification = Notification::create([
+                'type' => 'like',
+                'user_id' => $post->user->id,
+                'triggered_by_user_id' => $userId,
+                'notifiable_id' => $post->id,
+                'notifiable_type' => Post::class,
+                'data' => json_encode(
+                    [
+                        'message' => "{$user->name} liked your post!"
+                    ]),
+                'is_read' => false,
+            ]);
+
+            event(new Notifications($notification));
 
             return back()->with('success', 'Liked successfully!');
         } catch (\Illuminate\Validation\ValidationException $e) {

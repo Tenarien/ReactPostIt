@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Notifications;
 use App\Models\Comment;
+use App\Models\Notification;
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class CommentController
@@ -21,6 +24,35 @@ class CommentController
             $comment->load('user', 'replies');
             // Ensure parent_id is included as null if not set
             $comment->parent_id = $comment->parent_id ?? null;
+
+            $post = Post::findOrFail($comment->post_id);
+
+            $recipientId = null;
+
+            if ($comment->parent_id) {
+                $parentComment = Comment::findOrFail($comment->parent_id);
+                $recipientId = $parentComment->user_id;
+            } else {
+                $recipientId = $post->user_id;
+            }
+
+            if ($recipientId !== $validatedData['user_id']) {
+                $notification = Notification::create([
+                    'type' => 'comment',
+                    'user_id' => $recipientId,
+                    'triggered_by_user_id' => $validatedData['user_id'],
+                    'notifiable_id' => $post->id,
+                    'notifiable_type' => Post::class,
+                    'data' => json_encode([
+                        'message' => "{$comment->user->name} commented on your " .
+                            ($comment->parent_id ? "comment" : "post") . ": {$comment->body}",
+                        'comment_id' => $comment->id,
+                    ]),
+                    'is_read' => false,
+                ]);
+
+                event(new Notifications($notification));
+            }
 
             return back()->with([
                 'success' => 'Comment created successfully!',
@@ -81,6 +113,25 @@ class CommentController
                 return back()->with('message', 'You disliked this comment!');
             }
             $comment->likes()->attach($userId);
+
+            $user = auth()->user();
+
+            $notification = Notification::create([
+                'type' => 'like',
+                'user_id' => $comment->user->id,
+                'triggered_by_user_id' => $userId,
+                'notifiable_id' => $comment->id,
+                'notifiable_type' => Comment::class,
+                'data' => json_encode(
+                    [
+                        'message' => "{$user->name} liked your comment!",
+                        'post_id' => $comment->post->id
+                    ]),
+                'is_read' => false,
+            ]);
+
+            event(new Notifications($notification));
+
             return back()->with('success', 'Liked successfully!');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return back()->withErrors($e->errors())->with('error', 'Liking failed!');
