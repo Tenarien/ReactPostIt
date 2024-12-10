@@ -6,7 +6,7 @@ import EditPostForm from "@/Components/Posts/EditPostForm.jsx";
 import PostReactions from "@/Components/Posts/PostReactions.jsx";
 import DeleteConfirmationModal from "@/Components/Modals/DeleteConfirmationModal.jsx";
 
-export default function Show({ post, comments }) {
+export default function Show({ post, comments, highlightedComment }) {
     const { props, component } = usePage();
     const { auth } = props;
     const {delete: destroy, processing} = useForm({
@@ -132,6 +132,7 @@ export default function Show({ post, comments }) {
                 post={post}
                 comments={comments.data}
                 nextPageUrl={comments.next_page_url}
+                highlightedComment={highlightedComment}
             />
             {/* Delete Modal */}
             <DeleteConfirmationModal

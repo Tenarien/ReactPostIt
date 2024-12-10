@@ -4,7 +4,7 @@ import CreateCommentForm from './CreateCommentForm.jsx';
 import {router} from "@inertiajs/react";
 import {SyncLoader} from "react-spinners";
 
-function CommentsSection({ post, comments, nextPageUrl }) {
+function CommentsSection({ post, comments, nextPageUrl, highlightedComment }) {
     const [allComments, setAllComments] = useState(comments);
     const [loading, setLoading] = useState(false);
     const [nextPage, setNextPage] = useState(nextPageUrl);
@@ -99,6 +99,15 @@ function CommentsSection({ post, comments, nextPageUrl }) {
             />
 
             <div className="mt-4 space-y-2">
+                {highlightedComment && (
+                    <CommentItem
+                        key={highlightedComment.id}
+                        comment={highlightedComment}
+                        post={post}
+                        addComment={addComment}
+                        onDelete={deleteComment}
+                    />
+                )}
                 {allComments
                     .filter(comment => !comment.parent_id) // Filter for top-level comments only
                     .map(comment => (

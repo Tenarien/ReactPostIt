@@ -86,7 +86,7 @@ function CommentItem({comment, post, onDelete, addComment}) {
     };
     return (
         <div key={comment.id}
-             className="lg:pl-4 pl-0.5 pt-4 pb-4  bg-white border-l border-t border-b border-gray-200 rounded-lg shadow-sm relative">
+             className={`lg:pl-4 pl-0.5 pt-4 pb-4 bg-white border-l border-t border-b rounded-lg shadow-sm relative ${comment.highlighted && comment.highlighted ? 'border-orange-500 border' : 'border-gray-200'}`}>
 
             {/* CommentItem Header */}
             <div className="flex justify-between items-center mb-2">
