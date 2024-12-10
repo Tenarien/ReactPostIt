@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -44,6 +45,15 @@ class HandleInertiaRequests extends Middleware
             'auth.user' => fn () => $request->user()
                 ? $request->user()->only('id', 'name', 'email')
                 : null,
+            'notifications' => fn () => $request->user()
+                ? Notification::where('user_id', $request->user()->id)
+                    ->orderBy('created_at', 'desc')
+                    ->get()
+                    ->map(function ($notification) {
+                        $notification->data = json_decode($notification->data, true);
+                        return $notification;
+                    })
+                : [],
         ]);
     }
 }
