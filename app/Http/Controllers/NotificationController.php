@@ -17,4 +17,12 @@ class NotificationController
             'notifications' => $notifications,
         ]);
     }
+
+    public function markAllAsRead()
+    {
+        $user = auth()->user();
+        $user->notifications()
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+    }
 }
