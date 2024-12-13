@@ -1,22 +1,64 @@
-import {useState} from "react";
-import {Link} from "@inertiajs/react";
+import {useEffect, useRef, useState} from "react";
+import {Link, useForm, usePage} from "@inertiajs/react";
+import {Inertia} from "@inertiajs/inertia";
 
 const NotificationsDropdown = ({notifications}) => {
     const [isOpen, setIsOpen] = useState(false);
+    const dropdownRef = useRef(null);
+
     const typeToUrl = {
         "App\\Models\\Post": "/posts",
         "App\\Models\\Comment": "/posts",
         "App\\Models\\User": "/profile",
     };
+    const isNotRead = notifications.some((obj) => obj.is_read === 0);
+    const [newNotifications, setNewNotifications] = useState(isNotRead);
+    useEffect(() => {
+        setNewNotifications(isNotRead);
+    }, [notifications]);
+
+    const {post, processing} = useForm();
+
+    function setReadTrue(e) {
+        e.preventDefault();
+        if (!isNotRead) {
+            setIsOpen(!isOpen);
+            return;
+        }
+        if(isOpen) {
+            setIsOpen(!isOpen);
+            return;
+        }
+        console.log("Sending is_read to true");
+        setIsOpen(!isOpen);
+
+        post("/notifications/mark-all-read", {
+            preserveScroll: true,
+        });
+    }
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     return (
-        <div className="relative">
+        <div className="relative" ref={dropdownRef}>
             <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="text-orange-500 hover:text-white font-semibold py-2 px-2 rounded-full border-2 bg-white hover:bg-orange-500 border-orange-500 hover:border-white transition-all duration-300"
+                onClick={(e) => setReadTrue(e)}
+                className={`text-orange-500 hover:text-white font-semibold py-2 px-2 rounded-full border-2 bg-white hover:bg-orange-500 border-orange-500 hover:border-white transition-all duration-300 ${
+                    processing ? "bg-gradient-to-b from-white to-orange-500" : ""
+                }`}
+                disabled={processing}
             >
                 {/* Notification Icon */}
-                {notifications.length > 0 && (
+                {notifications.length > 0 && newNotifications && (
                     <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
                 )}
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor">
@@ -56,7 +98,8 @@ const NotificationsDropdown = ({notifications}) => {
                                     if (notification.type === 'like' && notification.data.post_id) {
                                         return (
                                             <li key={notification.id} className="p-4 hover:bg-gray-100 cursor-pointer">
-                                                <Link href={`/posts/${notification.data.post_id}`} data={{comment: notification.notifiable_id}}>
+                                                <Link href={`/posts/${notification.data.post_id}`}
+                                                      data={{comment: notification.notifiable_id}}>
                                                     <p className="text-sm text-gray-700">
                                                         {notification.data.message || "New notification"}
                                                     </p>
