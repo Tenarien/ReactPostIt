@@ -69,9 +69,9 @@ function Avatar({ user }) {
                 </div>
                 <motion.div
                     ref={menuRef}
-                    initial={{opacity: 0, height: 0}}
-                    animate={showMenu ? {opacity: 1, height: "auto"} : {opacity: 0, height: 0}}
-                    transition={{duration: 0.3, ease: "easeInOut"}}
+                    initial={{visibility: 'hidden', opacity: 0, height: 0}}
+                    animate={showMenu ? {visibility: 'visible', opacity: 100, height: "auto"} : {visibility: 'hidden', opacity: 0, height: 0}}
+                    transition={{duration: 0.2, ease: "easeInOut"}}
                     className="absolute top-10 shadow-lg flex flex-col justify-center items-center text-center space-y-2 right-0 bg-white py-2 rounded border-orange-500 border overflow-hidden"
                 >
                     <div
