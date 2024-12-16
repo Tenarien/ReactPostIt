@@ -2,8 +2,9 @@ import {useEffect, useRef, useState} from "react";
 import {Link, useForm, usePage} from "@inertiajs/react";
 import {Inertia} from "@inertiajs/inertia";
 
-const NotificationsDropdown = ({notifications}) => {
+const NotificationsDropdown = ({ notifications: initialNotifications }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [notifications, setNotifications] = useState(initialNotifications);
     const dropdownRef = useRef(null);
 
     const typeToUrl = {
@@ -11,38 +12,38 @@ const NotificationsDropdown = ({notifications}) => {
         "App\\Models\\Comment": "/posts",
         "App\\Models\\User": "/profile",
     };
+
     const isNotRead = notifications.some((obj) => obj.is_read === 0);
-    const [newNotifications, setNewNotifications] = useState(isNotRead);
-    useEffect(() => {
-        setNewNotifications(isNotRead);
-    }, [notifications]);
 
-    const {post, processing} = useForm();
+    const { post, processing } = useForm();
 
-    function setReadTrue(e) {
+    // Mark all notifications as read
+    const setReadTrue = (e) => {
         e.preventDefault();
+
         if (!isNotRead) {
             setIsOpen(!isOpen);
             return;
         }
-        if(isOpen) {
-            setIsOpen(!isOpen);
-            return;
-        }
-        console.log("Sending is_read to true");
         setIsOpen(!isOpen);
 
         post("/notifications/mark-all-read", {
             preserveScroll: true,
+            onSuccess: () => {
+                // Update the local state to mark all notifications as read
+                setNotifications((prev) =>
+                    prev.map((notif) => ({ ...notif, is_read: 1 }))
+                );
+            },
         });
-    }
+    };
 
     useEffect(() => {
-        function handleClickOutside(event) {
+        const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setIsOpen(false);
             }
-        }
+        };
 
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -58,7 +59,7 @@ const NotificationsDropdown = ({notifications}) => {
                 disabled={processing}
             >
                 {/* Notification Icon */}
-                {notifications.length > 0 && newNotifications && (
+                {notifications.length > 0 && isNotRead && (
                     <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
                 )}
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor">
