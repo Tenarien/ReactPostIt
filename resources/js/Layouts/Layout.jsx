@@ -11,15 +11,21 @@ export default function Layout({ children }) {
     const { auth } = props;
 
     useEffect(() => {
-        if(!auth.user) return;
+        if (!auth.user) return;
 
-        Echo.private(`user.notifications.${auth.user.id}`)
+        const channel = Echo.private(`user.notifications.${auth.user.id}`)
             .listen("Notifications", (notification) => {
                 console.log("Notification received:", notification);
+
                 setNotifications((prev) => [notification, ...prev]);
             })
-            .error((error) => console.error('Subscription error:', error));
-    }, []);
+            .error((error) => console.error("Subscription error:", error));
+
+        return () => {
+            channel.stopListening("Notifications");
+        };
+    }, [auth.user]);
+
     return (
         <>
             <header className="sticky w-full top-0 z-50 py-2 px-10 bg-zinc-600 text-white shadow-lg">
