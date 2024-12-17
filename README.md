@@ -49,6 +49,8 @@ Copy .env.example to .env: ```cp .env.example .env``` ***Set database credential
 ```php artisan migrate --seed```
 - Build Frontend Assets:
 ```npm run dev```
+- Start Reverb Server:
+    ```php artisan reverb:start``` or ```php artisan reverb:start --port=YOUR_PORT```
 - Start the Server:
 ```php artisan serve```
 - Visit the App:
@@ -81,9 +83,9 @@ php artisan migrate --seed
 - Like: Show your appreciation for posts you enjoy.
 
 ## Future Improvements
-- Real-Time Notifications: Notify users about likes, comments, and new posts in real-time using WebSockets.
+- ✅ Real-Time Notifications: Notify users about likes, comments, and new posts in real-time using WebSockets.
 - Content Moderation: Add admin tools to manage inappropriate content or ban users.
-- Search Functionality: Enable users to search for posts, topics, or other users.
+- ⌛ Search Functionality: Enable users to search for posts, topics, or other users.
 - Dark Mode: Add a toggle for dark mode for better user experience in low-light conditions.
 - Analytics Dashboard: Provide insights into user engagement and platform activity.
 
