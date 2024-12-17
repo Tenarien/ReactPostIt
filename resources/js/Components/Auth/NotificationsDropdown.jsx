@@ -1,11 +1,26 @@
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import {Link, useForm, usePage} from "@inertiajs/react";
-import {Inertia} from "@inertiajs/inertia";
 
-const NotificationsDropdown = ({ notifications: initialNotifications }) => {
+const NotificationsDropdown = () => {
+    const { props } = usePage();
+    const { auth } = props;
     const [isOpen, setIsOpen] = useState(false);
-    const [notifications, setNotifications] = useState(initialNotifications);
+    const [notifications, setNotifications] = useState(props.notifications || []);
     const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        if (!auth.user) return;
+
+        const channel = Echo.private(`user.notifications.${auth.user.id}`)
+            .listen("Notifications", (notification) => {
+                setNotifications((prev) => [notification, ...prev]);
+            })
+            .error((error) => console.error("Subscription error:", error));
+
+        return () => {
+            channel.stopListening("Notifications");
+        };
+    }, [auth.user]);
 
     const typeToUrl = {
         "App\\Models\\Post": "/posts",
@@ -13,7 +28,11 @@ const NotificationsDropdown = ({ notifications: initialNotifications }) => {
         "App\\Models\\User": "/profile",
     };
 
-    const isNotRead = notifications.some((obj) => obj.is_read === 0);
+    // Recalculate isNotRead when notifications change
+    const isNotRead = useMemo(() => {
+        return notifications.some((obj) => obj.is_read === false);
+    }, [notifications]);
+
 
     const { post, processing } = useForm();
 
@@ -32,7 +51,7 @@ const NotificationsDropdown = ({ notifications: initialNotifications }) => {
             onSuccess: () => {
                 // Update the local state to mark all notifications as read
                 setNotifications((prev) =>
-                    prev.map((notif) => ({ ...notif, is_read: 1 }))
+                    prev.map((notif) => ({ ...notif, is_read: true }))
                 );
             },
         });

@@ -7,24 +7,8 @@ import {useEffect, useState} from "react";
 
 export default function Layout({ children }) {
     const { props } = usePage();
-    const [notifications, setNotifications] = useState(props.notifications || []);
     const { auth } = props;
 
-    useEffect(() => {
-        if (!auth.user) return;
-
-        const channel = Echo.private(`user.notifications.${auth.user.id}`)
-            .listen("Notifications", (notification) => {
-                console.log("Notification received:", notification);
-
-                setNotifications((prev) => [notification, ...prev]);
-            })
-            .error((error) => console.error("Subscription error:", error));
-
-        return () => {
-            channel.stopListening("Notifications");
-        };
-    }, [auth.user]);
 
     return (
         <>
@@ -42,7 +26,7 @@ export default function Layout({ children }) {
                         <LoginForm />
                     ) : (
                         <div className="flex gap-2 items-center">
-                            <NotificationsDropdown notifications={notifications}/>
+                            <NotificationsDropdown/>
                             <Avatar
                                 user={auth.user ? auth.user.name : null}
                             />
