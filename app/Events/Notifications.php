@@ -41,6 +41,7 @@ class Notifications implements ShouldBroadcastNow
             'notifiable_id' => $this->notification->notifiable_id,
             'notifiable_type' => $this->notification->notifiable_type,
             'data' => json_decode($this->notification->data, true),
+            'is_read' => $this->notification->is_read,
             'created_at' => $this->notification->created_at->toIso8601String(),
             'updated_at' => $this->notification->updated_at->toIso8601String(),
         ];
