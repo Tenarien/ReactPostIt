@@ -56,7 +56,27 @@ class PostController
                 'user_id' => ['required', 'integer', 'exists:users,id'],
             ]);
 
-            Post::create($validatedData);
+            $post = Post::create($validatedData);
+            $user = auth()->user();
+
+            $followers = $user->followers;
+
+
+            foreach ($followers as $follower) {
+                $notification = Notification::create([
+                    'type' => 'post_created',
+                    'user_id' => $follower->id,
+                    'triggered_by_user_id' => $user->id,
+                    'notifiable_id' => $post->id,
+                    'notifiable_type' => Post::class,
+                    'data' => json_encode([
+                        'message' => "{$user->name} has created a new post!",
+                    ]),
+                    'is_read' => false,
+                ]);
+
+                event(new Notifications($notification));
+            }
 
             return redirect('/')->with('success', 'Post created!');
         } catch (\Illuminate\Validation\ValidationException $e) {
