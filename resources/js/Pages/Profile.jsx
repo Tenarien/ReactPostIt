@@ -32,7 +32,7 @@ export default function Profile({user, posts}) {
                             </div>
                             <h1 className="text-3xl font-bold">{user.name || "John Doe"}</h1>
 
-                            <div className="bg-orange-500 text-white p-6 flex">
+                            <div className="flex items-center justify-center bg-orange-500 text-white py-6">
                                 <FollowSection user={user}/>
                             </div>
 
