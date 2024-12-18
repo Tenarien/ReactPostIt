@@ -87,9 +87,9 @@ const NotificationsDropdown = () => {
                 </svg>
             </button>
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200">
+                <div className="absolute -right-full sm:right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-orange-500">
                     <div className="py-2 px-4 border-b border-gray-100">
-                        <h3 className="text-lg font-medium text-gray-800">Notifications</h3>
+                        <h3 className="text-lg text-orange-500">Notifications</h3>
                     </div>
                     <div className="max-h-60 overflow-y-auto">
                         {notifications.length === 0 ? (
