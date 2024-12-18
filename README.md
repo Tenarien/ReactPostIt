@@ -84,8 +84,8 @@ php artisan migrate --seed
 
 ## Future Improvements
 - ✅ Real-Time Notifications: Notify users about likes, comments, and new posts in real-time using WebSockets.
-- Content Moderation: Add admin tools to manage inappropriate content or ban users.
-- ⌛ Search Functionality: Enable users to search for posts, topics, or other users.
+- ⌛ Content Moderation: Add admin tools to manage inappropriate content or ban users.
+- ✅ Search Functionality: Enable users to search for posts, topics, or other users.
 - Dark Mode: Add a toggle for dark mode for better user experience in low-light conditions.
 - Analytics Dashboard: Provide insights into user engagement and platform activity.
 
