@@ -5,6 +5,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,9 @@ Route::get('/post/{post}', [PostController::class, 'show']);
 Route::get('/comments/{comment}/likes', [CommentController::class, 'fetchCommentLikes']);
 
 Route::get('/profile/{user}', [UserController::class, 'show']);
+
+Route::get('/search', [SearchController::class, 'search']);
+
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'registerForm'])->name('register.form');
