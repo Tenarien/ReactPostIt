@@ -37,6 +37,13 @@ function CreateCommentForm({post, comments, comment, addComment, onReplyAdded}) 
     };
 
 
+    const handleEnterPress = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleCommentSubmit(e);
+        }
+    };
+
     return (
         <>
             <form onSubmit={handleCommentSubmit}
@@ -48,6 +55,7 @@ function CreateCommentForm({post, comments, comment, addComment, onReplyAdded}) 
                     value={data.body}
                     onChange={e => setData('body', e.target.value)}
                     onFocus={handleFocus}
+                    onKeyDown={handleEnterPress}
                 />
                 {errors.body && (
                     <p className="text-sm text-red-600 font-semibold mt-1">{errors.body}</p>

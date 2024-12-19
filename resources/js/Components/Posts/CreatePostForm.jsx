@@ -18,6 +18,13 @@ export default function CreatePostForm({ addNewPost }) {
             }
         });
     }
+    const handleEnterPress = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            submit(e);
+        }
+    };
+
     return (
         <>
             <div className="relative mx-auto p-6 border-2 border-gray-500 rounded-lg shadow-lg bg-white">
@@ -29,6 +36,7 @@ export default function CreatePostForm({ addNewPost }) {
                         placeholder="Write your post..."
                         value={data.body}
                         onChange={(e) => setData('body', e.target.value)}
+                        onKeyDown={handleEnterPress}
                     />
                     {/* Error message for the body */}
                     {errors.body && (

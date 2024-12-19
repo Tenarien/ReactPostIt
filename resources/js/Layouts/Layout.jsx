@@ -17,34 +17,36 @@ export default function Layout({ children }) {
             {/* Top Header */}
             <header className="sticky w-full top-0 z-50 py-2 px-6 bg-zinc-600 text-white shadow-lg">
                 <nav className="flex items-center justify-between gap-4">
-                    <Link
-                        href="/"
-                        className={`hidden sm:flex flex-col items-center text-xs transition-all duration-300 ${
-                            url === '/' ? 'text-orange-500' : 'hover:text-orange-500'
-                        }`}
-                    >
-                        <AiFillHome
-                            className={`text-xl transition-all duration-300 ${
+                    <div className="flex gap-6">
+                        <Link
+                            href="/"
+                            className={`hidden sm:flex flex-col items-center text-xs transition-all duration-300 ${
                                 url === '/' ? 'text-orange-500' : 'hover:text-orange-500'
                             }`}
-                        />
-                        <span>Home</span>
-                    </Link>
-                    {auth.user && (
-                        <Link
-                            href="/?following=1"
-                            className={`hidden sm:flex flex-col items-center text-xs transition-all duration-300 ${
-                                url.includes('following=1') ? 'text-orange-500' : 'hover:text-orange-500'
-                            }`}
                         >
-                            <FaStream
+                            <AiFillHome
                                 className={`text-xl transition-all duration-300 ${
-                                    url.includes('following=1') ? 'text-orange-500' : 'hover:text-orange-500'
+                                    url === '/' ? 'text-orange-500' : 'hover:text-orange-500'
                                 }`}
                             />
-                            <span>Following</span>
+                            <span>Home</span>
                         </Link>
-                    )}
+                        {auth.user && (
+                            <Link
+                                href="/?following=1"
+                                className={`hidden sm:flex flex-col items-center text-xs transition-all duration-300 ${
+                                    url.includes('following=1') ? 'text-orange-500' : 'hover:text-orange-500'
+                                }`}
+                            >
+                                <FaStream
+                                    className={`text-xl transition-all duration-300 ${
+                                        url.includes('following=1') ? 'text-orange-500' : 'hover:text-orange-500'
+                                    }`}
+                                />
+                                <span>Following</span>
+                            </Link>
+                        )}
+                    </div>
                     <SearchBar />
                     {!auth.user ? (
                         <LoginForm />

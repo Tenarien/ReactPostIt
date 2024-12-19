@@ -46,7 +46,7 @@ const SearchBar = () => {
     }, []);
 
     return (
-        <div className="relative w-full mx-6" ref={searchRef}>
+        <div className="relative sm:w-1/2 mx-6" ref={searchRef}>
             {/* Search Input */}
             <input
                 type="text"
