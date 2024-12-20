@@ -18,7 +18,7 @@ class CommentFactory extends Factory
     {
         return [
             'post_id' => Post::factory(),
-            'user_id' => User::factory(),
+            'user_id' => User::inRandomOrder()->first()->id,
             'body' => $this->faker->sentence(),
             'parent_id' => null,
             'created_at' => now(),
