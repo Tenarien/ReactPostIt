@@ -16,7 +16,9 @@ class Report extends Model
     protected $fillable = [
         'reported_by',
         'reason',
-        'resolved_at'
+        'reportable_id',
+        'reportable_type',
+        'resolved_at',
     ];
 
     public function reportable() :MorphTo
