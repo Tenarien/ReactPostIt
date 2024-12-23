@@ -1,10 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
 import CommentReactions from "@/Components/Comments/CommentReactions.jsx";
-import {Link, useForm, usePage} from "@inertiajs/react";
+import {Link, router, useForm, usePage} from "@inertiajs/react";
 import {formatDistanceToNow} from "date-fns";
 import EditCommentForm from "@/Components/Comments/EditCommentForm.jsx";
 import DeleteConfirmationModal from "@/Components/Modals/DeleteConfirmationModal.jsx";
 import CreateCommentForm from "@/Components/Comments/CreateCommentForm.jsx";
+import ContentReportModal from "@/Components/Modals/ContentReportModal.jsx";
 
 function CommentItem({comment, post, onDelete, addComment}) {
     const [showReplies, setShowReplies] = useState(false);
@@ -13,6 +14,7 @@ function CommentItem({comment, post, onDelete, addComment}) {
     const [showReplyForm, setShowReplyForm] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [showReportModal, setShowReportModal] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
     const [visibleReplies, setVisibleReplies] = useState(5);
     const [thisComment, setThisComment] = useState(comment);
@@ -84,6 +86,26 @@ function CommentItem({comment, post, onDelete, addComment}) {
     const handleEditCancel = () => {
         setEditMode(false);
     };
+
+    const {data, setData, post: report,} = useForm({
+        reason: "",
+        comment_id: comment.id,
+    });
+
+    const handleReportSubmit = (violation) => {
+
+        const reportData = new FormData();
+        reportData.append('comment_id', comment.id);
+        reportData.append('reason', violation);
+
+        router.post('/report', reportData, {
+            forceFormData: true,
+            preserveState: true,
+            preserveScroll: true,
+            onError: (errors) => console.log(errors),
+        })
+    };
+
     return (
         <div key={comment.id}
              className={`lg:pl-4 pl-0.5 pt-4 pb-4 bg-white border-l border-t border-b rounded-lg shadow-sm relative ${comment.highlighted && comment.highlighted ? 'border-orange-500 border' : 'border-gray-200'}`}>
@@ -107,7 +129,7 @@ function CommentItem({comment, post, onDelete, addComment}) {
                         {comment.created_at && comment.created_at !== comment.updated_at ? ' (edited)' : ''}
                     </span>
                 </div>
-                {auth.user && comment.user.id === auth.user.id && (
+                {auth.user && (
                     <button
                         ref={buttonRef}
                         onClick={() => setShowCommentOptions(!showCommentOptions)}
@@ -120,27 +142,43 @@ function CommentItem({comment, post, onDelete, addComment}) {
                     ref={optionsRef}
                     className={`absolute z-40 right-0 transition-all duration-500 ease-in-out ${showCommentOptions ? 'opacity-100' : 'opacity-0'}`}
                 >
-                    {showCommentOptions && comment.user.id === auth.user.id && (
-                        <div
-                            className="absolute text-center bg-gray-100 w-20 py-4 shadow-lg rounded border border-orange-500 flex right-5 flex-col gap-2">
-                            <form onSubmit={handleCommentDeletion}>
+                    {showCommentOptions && (
+                        <div className="absolute text-center bg-gray-100 w-20 py-4 shadow-lg rounded border border-orange-500 flex right-5 flex-col gap-2">
+                            {comment.user.id === auth.user.id ? (
+                                <>
+                                    <form onSubmit={handleCommentDeletion}>
+                                        <button
+                                            onClick={handleOpenDeleteModal}
+                                            disabled={processing}
+                                            className="text-sm text-orange-500 w-full p-1 border-orange-500 hover:bg-red-500 hover:text-white hover:shadow-md transition duration-300"
+                                        >
+                                            {processing ? 'Deleting...' : 'Delete'}
+                                        </button>
+                                    </form>
+                                    <button
+                                        onClick={() => {
+                                            setEditMode(!editMode);
+                                            setShowCommentOptions(false);
+                                        }}
+                                        className="text-sm text-orange-500 w-full p-1 border-orange-500 hover:bg-green-500 hover:text-white hover:shadow-md transition-all duration-300"
+                                    >
+                                        Update
+                                    </button>
+                                    <button
+                                        onClick={() => setShowReportModal(true)}
+                                        className="text-sm text-orange-500 w-full p-1 border-orange-500 hover:bg-red-500 hover:text-white hover:shadow-md transition-all duration-300"
+                                    >
+                                        Report
+                                    </button>
+                                </>
+                            ) : (
                                 <button
-                                    onClick={handleOpenDeleteModal}
-                                    disabled={processing}
-                                    className="text-sm text-orange-500 w-full p-1 border-orange-500 hover:bg-red-500 hover:text-white hover:shadow-md transition duration-300"
+                                    onClick={() => setShowReportModal(true)}
+                                    className="text-sm text-orange-500 w-full p-1 border-orange-500 hover:bg-red-500 hover:text-white hover:shadow-md transition-all duration-300"
                                 >
-                                    {processing ? 'Deleting...' : 'Delete'}
+                                Report
                                 </button>
-                            </form>
-                            <button
-                                onClick={() => {
-                                    setEditMode(!editMode);
-                                    setShowCommentOptions(false);
-                                }}
-                                className="text-sm text-orange-500 w-full p-1 border-orange-500 hover:bg-green-500 hover:text-white hover:shadow-md transition-all duration-300"
-                            >
-                                Update
-                            </button>
+                            )}
                         </div>
                     )}
                 </div>
@@ -226,6 +264,12 @@ function CommentItem({comment, post, onDelete, addComment}) {
                 onClose={handleCloseModal}
                 onConfirm={handleCommentDeletion}
                 message={modalMessage}
+            />
+            {/* Report Modal */}
+            <ContentReportModal
+                isOpen={showReportModal}
+                onClose={() => setShowReportModal(false)}
+                onSubmit={handleReportSubmit}
             />
         </div>
     );

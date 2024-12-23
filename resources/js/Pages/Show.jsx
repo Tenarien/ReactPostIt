@@ -1,10 +1,12 @@
-import {Head, Link, useForm, usePage} from "@inertiajs/react";
+import {Head, Link, router, useForm, usePage} from "@inertiajs/react";
 import { formatDistanceToNow } from 'date-fns'
-import {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import CommentsSection from "@/Components/Comments/CommentsSection.jsx";
 import EditPostForm from "@/Components/Posts/EditPostForm.jsx";
 import PostReactions from "@/Components/Posts/PostReactions.jsx";
 import DeleteConfirmationModal from "@/Components/Modals/DeleteConfirmationModal.jsx";
+import ContentReportModal from "@/Components/Modals/ContentReportModal.jsx";
+import { FaFlag } from "react-icons/fa";
 
 export default function Show({ post, comments, highlightedComment }) {
     const { props, component } = usePage();
@@ -17,6 +19,7 @@ export default function Show({ post, comments, highlightedComment }) {
     const [showPostOptions, setShowPostOptions] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [showReportModal, setShowReportModal] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
 
     const optionsRef = useRef(null);
@@ -56,6 +59,20 @@ export default function Show({ post, comments, highlightedComment }) {
     function handleEditComplete() {
         setEditMode(false);
     }
+
+    const handleReportSubmit = (violation) => {
+
+        const reportData = new FormData();
+        reportData.append('post_id', post.id);
+        reportData.append('reason', violation);
+
+        router.post('/report', reportData, {
+            forceFormData: true,
+            preserveState: true,
+            preserveScroll: true,
+            onError: (errors) => console.log(errors),
+        })
+    };
 
     return (
         <>
@@ -120,10 +137,18 @@ export default function Show({ post, comments, highlightedComment }) {
                     (<p className="text-gray-800">{post.body}</p>)
                 }
 
-                <div className="mt-4">
+                <div className="flex items-center gap-4 mt-4">
                     <PostReactions
                         post={post}
                     />
+                    {/* Report Button */}
+                    <button
+                        type="button"
+                        onClick={() => setShowReportModal(true)}
+                        className="text-orange-500"
+                    >
+                        <FaFlag className="text-orange-500 hover:text-black transition-all duration-300"/>
+                    </button>
                 </div>
             </div>
 
@@ -140,6 +165,12 @@ export default function Show({ post, comments, highlightedComment }) {
                 onClose={handleCloseModal}
                 onConfirm={handlePostDeletion}
                 message={modalMessage}
+            />
+            {/* Report Modal */}
+            <ContentReportModal
+                isOpen={showReportModal}
+                onClose={() => setShowReportModal(false)}
+                onSubmit={handleReportSubmit}
             />
         </>
     );
