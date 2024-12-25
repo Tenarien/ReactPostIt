@@ -58,7 +58,7 @@ class Comment extends Model
     {
         return self::where('post_id', $post->id)
             ->whereNull('parent_id')
-            ->with('user', 'replies')
+            ->with('user', 'replies', 'likes')
             ->paginate(10);
     }
 
