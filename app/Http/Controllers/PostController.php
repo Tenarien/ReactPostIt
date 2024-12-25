@@ -102,7 +102,7 @@ class PostController
         $highlightedComment = null;
         if($request) {
             $highlightedComment = Comment::where('id', $request->query('comment'))
-                ->with('user', 'replies')
+                ->with('user', 'replies', 'likes')
                 ->first();
             if($highlightedComment) {
                 $highlightedComment->setAttribute('highlighted', true);
