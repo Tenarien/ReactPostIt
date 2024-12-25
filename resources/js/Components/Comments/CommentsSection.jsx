@@ -23,8 +23,6 @@ function CommentsSection({ post, comments, nextPageUrl, highlightedComment }) {
                 onSuccess: (response) => {
                     const { data: newComments, next_page_url: newNextPageUrl } = response.props.comments;
                     setAllComments(prevComments => [...prevComments, ...newComments]);
-                    console.log("response: ", response)
-                    console.log("new comments: ", newComments)
                     setNextPage(newNextPageUrl);
                     setLoading(false);
                 },
@@ -109,7 +107,8 @@ function CommentsSection({ post, comments, nextPageUrl, highlightedComment }) {
                     />
                 )}
                 {allComments
-                    .filter(comment => !comment.parent_id) // Filter for top-level comments only
+                    .filter(comment => !comment.parent_id && // Filter for top-level comments only
+                        (!highlightedComment || comment.id !== highlightedComment.id)) // Exclude highlighted comment
                     .map(comment => (
                         <CommentItem
                             key={comment.id}
