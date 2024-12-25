@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import axios from 'axios';
+import {Link} from "@inertiajs/react";
 
 const SearchBar = () => {
     const [query, setQuery] = useState('');
@@ -69,12 +70,18 @@ const SearchBar = () => {
                                 <h3 className="p-2 text-lg font-bold text-orange-500 border-b border-orange-500 mx-4">Posts</h3>
                                 {results.posts.length ? (
                                     results.posts.map((post) => (
-                                        <div
+                                        <Link
+                                            href={`/posts/${post.id}`}
                                             key={post.id}
-                                            className="p-3 hover:bg-orange-50 cursor-pointer text-gray-700"
+                                            onClick={() => setIsOpen(false)}
                                         >
-                                            {post.body.substring(0, 30)}
-                                        </div>
+                                            <div
+
+                                                className="p-3 hover:bg-orange-50 cursor-pointer text-gray-700"
+                                            >
+                                                {post.body.substring(0, 30)}
+                                            </div>
+                                        </Link>
                                     ))
                                 ) : (
                                     <div className="p-3 text-gray-500">No posts found.</div>
@@ -86,12 +93,18 @@ const SearchBar = () => {
                                 <h3 className="p-2 text-lg font-bold text-orange-500 border-b border-orange-500 mx-4">Users</h3>
                                 {results.users.length ? (
                                     results.users.map((user) => (
-                                        <div
+                                        <Link
                                             key={user.id}
-                                            className="p-3 hover:bg-orange-50 cursor-pointer text-gray-700"
+                                            href={`/profile/${user.id}`}
+                                            onClick={() => setIsOpen(false)}
                                         >
-                                            {user.name}
-                                        </div>
+                                            <div
+                                                className="p-3 hover:bg-orange-50 cursor-pointer text-gray-700"
+                                            >
+                                                {user.name}
+                                            </div>
+                                        </Link>
+
                                     ))
                                 ) : (
                                     <div className="p-3 text-gray-500">No users found.</div>

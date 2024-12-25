@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {Link, useForm, usePage} from "@inertiajs/react";
 import { ClipLoader } from "react-spinners";
 import axios from "axios";
+import {FaThumbsUp} from "react-icons/fa";
 
 export default function CommentReactions({ comment }) {
     const { props } = usePage()
@@ -64,17 +65,19 @@ export default function CommentReactions({ comment }) {
                         />
                     ) : (
                         <>
-                            <p>{commentLikes}</p>
-                            {props.auth.user ? (<button
-                                onClick={handleLike}
-                                disabled={processing}
-                                className={`hover:text-orange-500 transition duration-300 ease-in-out ${likedComment ? 'text-orange-500' : ''}`}
-                            >
-                                {likedComment ? "Liked" : "Like"}
-                            </button>) :
-                                (<Link href={`/login`}>
-                                    <p className="hover:text-orange-500 transition duration-300 ease-in-out">Like</p>
-                                </Link>)}
+                            <div className="border border-orange-500 rounded flex gap-2 items-center">
+                                <p className="bg-orange-500 text-white border-r border-orange-500 px-1">{commentLikes}</p>
+                                {props.auth.user ? (<button
+                                        onClick={handleLike}
+                                        disabled={processing}
+                                        className={`pr-1 transition duration-300 ease-in-out ${likedComment ? 'text-orange-500 hover:text-black' : 'hover:text-orange-500'}`}
+                                    >
+                                        <FaThumbsUp/>
+                                    </button>) :
+                                    (<Link href={`/login`}>
+                                        <p className="pr-1 hover:text-orange-500 transition duration-300 ease-in-out"><FaThumbsUp/></p>
+                                    </Link>)}
+                            </div>
                         </>
                     )}
                 </div>

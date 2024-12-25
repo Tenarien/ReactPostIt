@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useForm, usePage} from "@inertiajs/react";
+import { FaThumbsUp } from "react-icons/fa";
 
 export default function PostReactions({post}) {
     const {props} = usePage()
@@ -34,13 +35,13 @@ export default function PostReactions({post}) {
     return (
         <>
             <div>
-                <div className="flex space-x-2">
-                    <p>{likes}</p>
+                <div className="border border-orange-500 rounded flex gap-2 items-center">
+                    <p className="bg-orange-500 text-white border-r border-orange-500 px-1">{likes}</p>
                     <button
                         onClick={handleLike}
                         disabled={processing}
-                        className={`hover:text-orange-500 transition duration-300 ease-in-out ${liked ? 'text-orange-500' : ''}`}
-                    >{liked ? "Liked" : "Like"}</button>
+                        className={`pr-1 transition duration-300 ease-in-out ${liked ? 'text-orange-500 hover:text-black' : 'hover:text-orange-500'}`}
+                    ><FaThumbsUp/></button>
                 </div>
             </div>
         </>
