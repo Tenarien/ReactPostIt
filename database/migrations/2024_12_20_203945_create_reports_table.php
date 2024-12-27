@@ -16,6 +16,7 @@ return new class extends Migration
             $table->morphs('reportable');
             $table->unsignedBigInteger('reported_by');
             $table->text('reason')->nullable();
+            $table->enum('status', ['new', 'resolved', 'ignored', 'deleted'])->default('new');
             $table->timestamp('resolved_at')->nullable();
             $table->timestamps();
 
