@@ -66,4 +66,86 @@ class ReportController
             return redirect()->back()->with('error', 'Failed to create a Report.');
         }
     }
+
+    public function investigate($reportId)
+    {
+        $report = Report::findOrFail($reportId);
+
+        $relatedData = null;
+
+        switch ($report->reportable_type) {
+            case Post::class:
+                $relatedData = Post::find($report->reportable_id);
+                break;
+            case Comment::class:
+                $relatedData = Comment::find($report->reportable_id);
+                break;
+            case User::class:
+                $relatedData = User::find($report->reportable_id);
+                break;
+        }
+
+        return inertia('Admin/Investigate', [
+            'report' => $report,
+            'relatedData' => $relatedData,
+        ]);
+    }
+
+    public function handleReport(Report $report, $action)
+    {
+        try {
+            switch ($action) {
+                case 'resolve':
+                    $report->update(['status' => 'resolved']);
+                    $message = 'Report resolved successfully!';
+                    break;
+
+                case 'ignore':
+                    $report->update(['status' => 'ignored']);
+                    $message = 'Report ignored successfully!';
+                    break;
+
+                case 'delete':
+                    $report->update(['status' => 'deleted']);
+
+                    // Delete the associated reportable entity
+                    switch ($report->reportable_type) {
+                        case Post::class:
+                            $post = Post::find($report->reportable_id);
+                            if ($post) {
+                                $post->delete();
+                            }
+                            break;
+
+                        case Comment::class:
+                            $comment = Comment::find($report->reportable_id);
+                            if ($comment) {
+                                $comment->delete();
+                            }
+                            break;
+
+                        case User::class:
+                            $user = User::find($report->reportable_id);
+                            if ($user) {
+                                $user->delete();
+                            }
+                            break;
+
+                        default:
+                            return redirect()->back()->with('error', 'Unknown reportable type.');
+                    }
+
+                    $message = 'Report marked as deleted, and associated content removed successfully!';
+                    break;
+
+
+                default:
+                    return redirect()->back()->with('error', 'Invalid action.');
+            }
+
+            return redirect('/admin')->with('success', $message);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to perform the action.');
+        }
+    }
 }
