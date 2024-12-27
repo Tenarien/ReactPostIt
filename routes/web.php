@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FollowController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PostController::class, 'index'])->name('post.index');
@@ -50,6 +52,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
 
     Route::post('/report', [ReportController::class, 'store']);
+});
+
+Route::middleware([AdminMiddleware::class])->prefix('/admin')->group(function () {
+    Route::get('/', [AdminController::class, 'index']);
+
+    Route::get('/{report}/investigate', [ReportController::class, 'investigate']);
+    Route::post('/{report}/{action}', [ReportController::class, 'handleReport'])->where('action', 'resolve|ignore');
+    Route::delete('/{report}/delete', [ReportController::class, 'handleReport'])->defaults('action', 'delete');
 });
 
 
