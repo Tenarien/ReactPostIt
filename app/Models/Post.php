@@ -19,6 +19,11 @@ class Post extends Model
         'user_id',
     ];
 
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
+
     public function comments() :HasMany
     {
         return $this->hasMany(Comment::class);
