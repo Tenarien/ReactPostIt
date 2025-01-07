@@ -63,7 +63,8 @@ export default function Show({ post, comments, highlightedComment }) {
     const handleReportSubmit = (violation) => {
 
         const reportData = new FormData();
-        reportData.append('post_id', post.id);
+        reportData.append('reportable_id', post.id);
+        reportData.append('reportable_type', 'Post');
         reportData.append('reason', violation);
 
         router.post('/report', reportData, {

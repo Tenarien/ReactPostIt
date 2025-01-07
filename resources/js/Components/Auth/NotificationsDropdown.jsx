@@ -48,6 +48,7 @@ const NotificationsDropdown = () => {
 
         post("/notifications/mark-all-read", {
             preserveScroll: true,
+            showProgress: false,
             onSuccess: () => {
                 // Update the local state to mark all notifications as read
                 setNotifications((prev) =>
@@ -72,9 +73,7 @@ const NotificationsDropdown = () => {
         <div className="relative" ref={dropdownRef}>
             <button
                 onClick={(e) => setReadTrue(e)}
-                className={`text-orange-500 hover:text-white font-semibold py-2 px-2 rounded-full border-2 bg-white hover:bg-orange-500 border-orange-500 hover:border-white transition-all duration-300 ${
-                    processing ? "bg-gradient-to-b from-white to-orange-500" : ""
-                }`}
+                className={`text-orange-500 hover:text-white font-semibold py-2 px-2 rounded-full border-2 bg-white hover:bg-orange-500 border-orange-500 hover:border-white transition-all duration-300 `}
                 disabled={processing}
             >
                 {/* Notification Icon */}

@@ -35,7 +35,7 @@ export default function PostReactions({post}) {
     return (
         <>
             <div>
-                <div className="border border-orange-500 rounded flex gap-2 items-center">
+                <div className="border border-orange-500 rounded flex gap-2 items-center w-fit">
                     <p className="bg-orange-500 text-white border-r border-orange-500 px-1">{likes}</p>
                     <button
                         onClick={handleLike}

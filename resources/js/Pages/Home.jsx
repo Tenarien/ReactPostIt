@@ -3,6 +3,8 @@ import {Head, Link, router, usePage} from "@inertiajs/react";
 import { formatDistanceToNow } from "date-fns";
 import React, {useEffect, useState} from "react";
 import {SyncLoader} from "react-spinners";
+import { FaArrowLeft } from "react-icons/fa";
+
 
 export default function Home({ posts }) {
     const { props } = usePage();
@@ -61,6 +63,20 @@ export default function Home({ posts }) {
             {props.auth.user && <CreatePostForm addNewPost={addNewPost} />}
             <div className="space-y-6 mt-6 w-full mx-auto">
                 {/* Posts List */}
+                {postData.data < 1 && (
+                    <div className="flex gap-2">
+                        <p>Can't find any posts,</p>
+                        <div className="flex items-center gap-2 hover:underline text-orange-500 font-semibold">
+                            <FaArrowLeft />
+                            <Link
+                                href="/"
+                            >
+                                Go back
+                            </Link>
+
+                        </div>
+                    </div>
+                )}
                 {postData.data.map(post => (
                     <div key={post.id} className="p-4 border rounded-lg shadow-md bg-white border-gray-200">
                         {/* Post Header */}

@@ -87,15 +87,12 @@ function CommentItem({comment, post, onDelete, addComment}) {
         setEditMode(false);
     };
 
-    const {data, setData, post: report,} = useForm({
-        reason: "",
-        comment_id: comment.id,
-    });
 
     const handleReportSubmit = (violation) => {
 
         const reportData = new FormData();
-        reportData.append('comment_id', comment.id);
+        reportData.append('reportable_id', comment.id);
+        reportData.append('reportable_type', 'Comment');
         reportData.append('reason', violation);
 
         router.post('/report', reportData, {
@@ -129,7 +126,7 @@ function CommentItem({comment, post, onDelete, addComment}) {
                         {comment.created_at && comment.created_at !== comment.updated_at ? ' (edited)' : ''}
                     </span>
                 </div>
-                {auth.user && (
+                {auth.user && comment.status !== 'deleted' && (
                     <button
                         ref={buttonRef}
                         onClick={() => setShowCommentOptions(!showCommentOptions)}
@@ -196,10 +193,12 @@ function CommentItem({comment, post, onDelete, addComment}) {
             <div className="flex items-center space-x-4">
 
                 {/* CommentItem Reactions */}
-                <CommentReactions
-                    post={post}
-                    comment={comment}
-                />
+                {comment.status !== 'deleted' && (
+                    <CommentReactions
+                        post={post}
+                        comment={comment}
+                    />
+                )}
 
                 {/* Button to toggle replies */}
                 {comment.replies.length > 0 && (
@@ -213,19 +212,21 @@ function CommentItem({comment, post, onDelete, addComment}) {
             </div>
 
             {/* Reply Form */}
-            {props.auth.user ? (
-                <button
-                    onClick={() => setShowReplyForm(!showReplyForm)}
-                    className="text-xs text-orange-500 hover:text-orange-600 underline"
-                >
-                    {showReplyForm ? 'Cancel' : 'Reply'}
-                </button>
-            ) : (
-                <Link href={`/login`}>
-                    <button className="text-xs text-orange-500 hover:text-orange-600 underline">
+            {comment.status === 'deleted' ? null : (
+                props.auth.user ? (
+                    <button
+                        onClick={() => setShowReplyForm(!showReplyForm)}
+                        className="text-xs text-orange-500 hover:text-orange-600 underline"
+                    >
                         {showReplyForm ? 'Cancel' : 'Reply'}
                     </button>
-                </Link>
+                ) : (
+                    <Link href={`/login`}>
+                        <button className="text-xs text-orange-500 hover:text-orange-600 underline">
+                            {showReplyForm ? 'Cancel' : 'Reply'}
+                        </button>
+                    </Link>
+                )
             )}
 
             {showReplyForm && (
