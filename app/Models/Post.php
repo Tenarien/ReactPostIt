@@ -17,6 +17,7 @@ class Post extends Model
     protected $fillable = [
         'body',
         'user_id',
+        'status',
     ];
 
     protected function serializeDate(\DateTimeInterface $date)

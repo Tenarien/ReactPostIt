@@ -19,7 +19,13 @@ class Comment extends Model
         'user_id',
         'parent_id',
         'body',
+        'status',
     ];
+
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
 
     public function post() :BelongsTo
     {
@@ -66,5 +72,11 @@ class Comment extends Model
     {
         return self::where('id', $comment->id)
             ->first();
+    }
+
+    // Accessor to return "[deleted]" for deleted comments
+    public function getBodyAttribute($value)
+    {
+        return $this->status === 'deleted' ? '[deleted]' : $value;
     }
 }
