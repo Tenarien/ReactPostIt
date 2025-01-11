@@ -1,66 +1,47 @@
-import { useEffect, useState } from "react";
-import { usePage } from "@inertiajs/react";
-import { motion, AnimatePresence } from "framer-motion";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai";
+import { Inertia } from "@inertiajs/inertia";
 
 export default function Flash() {
-    const { flash } = usePage().props;
-    const { url } = usePage()
-    const [visible, setVisible] = useState(false);
-    const [currentMessage, setCurrentMessage] = useState('');
-    const [messageType, setMessageType] = useState('');
+    Inertia.on("success", (event) => {
+        const props = event.detail.page.props;
 
-    useEffect(() => {
-        if (flash.success || flash.error) {
-            if (flash.success) {
-                setCurrentMessage(flash.success);
-                setMessageType('success');
-            } else if (flash.error) {
-                setCurrentMessage(flash.error);
-                setMessageType('error');
+        if (props.flash) {
+            if (props.flash.success) {
+                toast.success(props.flash.success, {
+                    icon: <AiOutlineCheckCircle className="text-orange-500 w-8 h-8" />,
+                    autoClose: 3000,
+                });
+            }
+            if (props.flash.error) {
+                toast.error(props.flash.error, {
+                    icon: <AiOutlineCloseCircle className="text-red-500 w-8 h-8" />,
+                    autoClose: 3000,
+                });
             }
 
-            setVisible(true);
-
-            const timer = setTimeout(() => {
-                setVisible(false);
-
-
-            }, 3000);
-
-            return () => clearTimeout(timer);
+            // Clear the flash message to prevent duplicates
+            delete props.flash;
         }
-    }, [flash]);
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setVisible(false);
-        }, 3000);
-        return () => clearTimeout(timer);
-    }, [url]);
-
-
-    const getBorderColor = () => {
-        switch (messageType) {
-            case 'success':
-                return 'border-orange-500';
-            case 'error':
-                return `border-red-500 text-red-500`;
-        }
-    };
+    });
 
     return (
-        <AnimatePresence>
-            {visible && (
-                <motion.div
-                    className={`fixed z-50 w-fit bottom-4 right-4 px-4 py-2 m-4 border rounded-lg bg-white text-orange-500 ${getBorderColor()}`}
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 50 }}
-                    transition={{ duration: 0.5, ease: "easeInOut" }}
-                >
-                    <p className="font-bold">{currentMessage}</p>
-                </motion.div>
-            )}
-        </AnimatePresence>
+        <ToastContainer
+            closeButton={false}
+            hideProgressBar={true}
+            newestOnTop={true}
+            draggable={false}
+            toastClassName={(context) =>
+                `${
+                    context?.type === "success"
+                        ? "bg-white text-orange-500"
+                        : context?.type === "error"
+                            ? "bg-white text-red-500"
+                            : "bg-white text-orange-500"
+                } flex items-center justify-between gap-2 p-2 mt-2 mr-2 rounded-lg shadow-lg  border border-orange-500`
+            }
+            bodyClassName="text-sm font-medium"
+        />
     );
 }
