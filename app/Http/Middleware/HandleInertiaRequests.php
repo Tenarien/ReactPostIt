@@ -43,7 +43,7 @@ class HandleInertiaRequests extends Middleware
                 'comment' => fn () => $request->session()->get('comment'),
             ],
             'auth.user' => fn () => $request->user()
-                ? $request->user()->only('id', 'name', 'email')
+                ? $request->user()->only('id', 'name', 'email', 'role')
                 : null,
             'notifications' => fn () => $request->user()
                 ? Notification::where('user_id', $request->user()->id)
