@@ -68,9 +68,15 @@ export default function Profile({user, posts}) {
                         />
                     </div>
                 </div>
-                <UserPosts
-                    posts={posts}
-                />
+                {posts.data.length < 1 ? (
+                    <div className="mt-4">
+                        <p className="text-xl text-center text-gray-500">This user has not posted anything yet.</p>
+                    </div>
+                ) : (
+                    <UserPosts
+                        posts={posts}
+                    />
+                )}
             </div>
         </>
     );

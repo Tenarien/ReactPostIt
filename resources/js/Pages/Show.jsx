@@ -135,7 +135,7 @@ export default function Show({ post, comments, highlightedComment }) {
                         onEditComplete={handleEditComplete}
                     />)
                     :
-                    (<p className="text-gray-800">{post.body}</p>)
+                    (<p className="text-gray-800 break-words">{post.body}</p>)
                 }
 
                 <div className="flex items-center gap-4 mt-4">
