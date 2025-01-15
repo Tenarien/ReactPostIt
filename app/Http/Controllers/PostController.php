@@ -177,20 +177,22 @@ class PostController
 
             $post->likes()->attach($userId);
 
-            $notification = Notification::create([
-                'type' => 'like',
-                'user_id' => $post->user->id,
-                'triggered_by_user_id' => $userId,
-                'notifiable_id' => $post->id,
-                'notifiable_type' => Post::class,
-                'data' => json_encode(
-                    [
-                        'message' => "{$user->name} liked your post!"
-                    ]),
-                'is_read' => false,
-            ]);
+            if($userId !== $post->user->id) {
+                $notification = Notification::create([
+                    'type' => 'like',
+                    'user_id' => $post->user->id,
+                    'triggered_by_user_id' => $userId,
+                    'notifiable_id' => $post->id,
+                    'notifiable_type' => Post::class,
+                    'data' => json_encode(
+                        [
+                            'message' => "{$user->name} liked your post!"
+                        ]),
+                    'is_read' => false,
+                ]);
 
-            event(new Notifications($notification));
+                event(new Notifications($notification));
+            }
 
             return back()->with('success', 'Liked successfully!');
         } catch (\Illuminate\Validation\ValidationException $e) {
