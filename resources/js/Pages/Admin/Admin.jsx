@@ -118,10 +118,18 @@ export default function Admin({  reports: initialReports  }) {
                                 key={report.id}
                                 className={`${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-orange-100`}
                             >
-                            <td className="py-4 px-6 text-sm text-gray-800">{report.id}</td>
-                                <td className="py-4 px-6 text-sm text-gray-800">{report.reportable_type}</td>
-                                <td className="py-4 px-6 text-sm text-gray-800">{report.reportable_id}</td>
-                                <td className="py-4 px-6 text-sm text-gray-800">{report.reported_by}</td>
+                                <td className="py-4 px-6 text-sm text-gray-800">{report.id}</td>
+                                <td className="py-4 px-6 text-sm text-gray-800">
+                                    {report.reportable && report.reportable_type === 'App\\Models\\Comment' && ('Comment')}
+                                    {report.reportable && report.reportable_type === 'App\\Models\\Post' && ('Post')}
+                                    {report.reportable && report.reportable_type === 'App\\Models\\User' && ('User')  }
+                                </td>
+                                <td className="py-4 px-6 text-sm text-gray-800">
+                                    {report.reportable ? report.reportable.id : "N/A"}
+                                </td>
+                                <td className="py-4 px-6 text-sm text-gray-800">
+                                    {report.reported_by_user? report.reported_by_user.name : "N/A"}
+                                </td>
                                 <td className="py-4 px-6 text-sm text-gray-800">{report.reason}</td>
                                 <td className="py-4 px-6">
                                     <div className="flex gap-2">
