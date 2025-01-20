@@ -52,6 +52,11 @@ class Comment extends Model
         return $this->belongsToMany(User::class, 'likes', 'comment_id', 'user_id');
     }
 
+    public function reports()
+    {
+        return $this->morphMany(Report::class, 'reportable');
+    }
+
     public static function getCommentsForPost($post)
     {
         return self::where('post_id', $post->id)

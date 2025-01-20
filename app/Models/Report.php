@@ -31,4 +31,9 @@ class Report extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function reportedByUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'reported_by');
+    }
 }

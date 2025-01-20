@@ -39,4 +39,15 @@ class Post extends Model
     {
         return $this->belongsToMany(User::class, 'likes', 'post_id', 'user_id')->withTimestamps();
     }
+
+    public function reports()
+    {
+        return $this->morphMany(Report::class, 'reportable');
+    }
+
+    // Accessor to return "[deleted]" for deleted posts
+    public function getBodyAttribute($value)
+    {
+        return $this->status === 'deleted' ? '[deleted]' : $value;
+    }
 }
